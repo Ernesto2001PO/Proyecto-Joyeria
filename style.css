@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 2px solid #ddd;
+}
+
+.logo h1 {
+    color: #3b5d3b;
+    font-size: 24px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.icons a {
+    margin-left: 15px;
+}
+
+.icons img {
+    width: 25px;
+    height: 25px;
+}
+
+.logoN img {
+    width: 25px;
+    height: 25px;
+}
+
+
+
+
+/* Estilos para el slideshow */
+.slideshow-container {
+    position: relative;
+    max-width: 100%;
+    /* Ajusta el tamaño máximo del slideshow */
+    margin: 40px auto;
+    /* Añade márgenes superior e inferior, y centra */
+    overflow: hidden;
+    padding: 10px;
+    border: 2px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Añade sombra */
+    text-align: center;
+    /* Centra el contenido */
+}
+
+.mySlides {
+    display: none;
+    margin: 10px;
+}
+
+.mySlides img {
+    width: 100%;
+    /* Ajusta la imagen al ancho del contenedor */
+    height: 50%;
+    /* Mantiene la proporción de la imagen */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@keyframes fade {
+    from {
+        opacity: .4
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-contact {
+    margin-top: 20px;
+}
+
+.footer-contact p {
+    margin: 5px 0;
+}
+
+
+/* Estilos para la sección de noticias */
+.texto {
+    margin: 20px 0;
+}
+
+li {
+
+    margin: 10px 0;
+}

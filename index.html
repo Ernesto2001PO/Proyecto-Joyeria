@@ -1,11 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Joyería Nats</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+    <header>
+        <div class="logo">
+            <img src="imagenesheader/logo.jpg" alt="logoN">
+            <h1>Joyería Nats</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Joyería NATS</a></li>
+                <li><a href="#">Quiénes somos</a></li>
+                <li><a href="#">Contáctanos</a></li>
+            </ul>
+        </nav>
+        <div class="icons">
+            <a href="#"><img src="imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
+            <a href="#"><img src="imagenesheader/carrito_de_compra.png" alt="Carrito de compras"></a>
+        </div>
+    </header>
+    <main>
+        <section class="banner">
+            <div class="slideshow-container">
+                <div class="mySlides ">
+                    <img src="imagenesbanner/banner1.jpeg" alt="Banner 1">
+                </div>
+                <div class="mySlides ">
+                    <img src="imagenesbanner/banner2.jpeg" alt="Banner 2">
+                </div>
+                <div class="mySlides ">
+                    <img src="imagenesbanner/banner3.jpg" alt="Banner 3">
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1 }
+            slides[slideIndex - 1].style.display = "block";
+            setTimeout(showSlides, 3000); // Cambia la imagen cada 3 segundos
+        }
+    </script>
+    <section class="QuienesSomos">
+        <h2>Quienes Somos</h2>
+        <div class="contenedor">
+            <div class="texto">
+                <p>En Joyería Nats, nos apasiona el arte de la joyeria y la belleza de cada pueza puede aportar a la
+                    vida de nuestros clientes. Somos una empresa joven y dinamica, dedicada a la creacion y venta de
+                    joyas unicas y alta calidad. </p>
+                <p>
+                    <b>Nuestra Misión:</b> Ofrecer joyas excepcionales que no solo embellezcan, sino que también cuenten
+                    historias y creen recuerdos inolvidables. Nos esforzamos por combinar diseño innovador con artesanía
+                    tradicional para brindar piezas que sean tanto modernas como atemporales.
+                </p>
+                <p><b>Nuestros valores:</b></p>
+                <ul>
+                    <li> <b>Calidad:</b> <span>Utilizamos materiales de la más alta calidad para asegurar que cada joya
+                            sea
+                            duradera y hermosa.</span></li>
+
+                    <li><b>Pasion </b><span> Amamos lo que hacemos y eso se refleja en cada detalle de nuestras
+                            creaciones.
+                        </span></li>
+                    <li><b>Compromiso</b> <span> Nos dedicamos a ofrecer un servicio al cliente excepcional,
+                            asegurándonos de
+                            que
+                            cada experiencia con nosotros sea memorable. </span>
+                    </li>
+                    <li><b>Respeto</b>
+                        <span>Valoramos y respetamos a cada uno de nuestros clientes, empleados y socios,
+                            fomentando un
+                            ambiente de confianza y colaboración.</span>
+                    </li>
+                    <li><b>Responsabilidad</b>
+                        <span>Nos comprometemos a actuar con integridad y ética en todas nuestras operaciones,
+                            asegurándonos de cumplir con nuestras promesas y obligaciones.</span>
+                    </li>
+
+                    <p>Te invitamos a explorar nuestras colecciones y descubrir la joya perfecta que refleje tu estilo y
+                        personalidad. En Joyería Nats cada pieza es más que una joya, es una expresión de
+                        arte y amor.</p>
+
+
+
+            </div>
+            <footer>
+
+                <div class="footer">
+                    <div class="footer-contact">
+                        <h2>Contacto</h2>
+                        <p><img src="imagenesfooter/ubicacion.png" alt="Ubicación">Av. Siempre Viva 742</p>
+                        <p><img src="imagenesfooter/telefono.png" alt="Teléfono">+591 65064084</p>
+                        <p><img src="imagenesfooter/email.png" alt="Correo"></p>
+
+
+
+                    </div>
+            </footer>
+
 </body>
+
 </html>
