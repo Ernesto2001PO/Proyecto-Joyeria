@@ -1,0 +1,187 @@
+/* Estilos generales para pantallas pequeñas (mobile-first) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0 auto;
+    padding: 0 15px;
+    max-width: 100%; /* Ocupa todo el ancho en móviles */
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #fff;
+    border-bottom: 2px solid #ddd;
+    justify-content: space-between;
+    
+}
+
+
+.lista_menu_header{
+    display: none;
+}
+
+
+ul {
+    text-align: left; 
+    margin: 10px auto; 
+    padding-left: 20px; 
+}
+
+ul li {
+    margin-bottom: 10px; 
+}
+
+ul li b {
+    font-weight: bold; /* Destaca el texto */
+}
+
+
+
+
+
+.logo {
+    text-align: end;
+}
+
+.logo h1 {
+    color: #3b5d3b;
+    font-size: 20px; /* Tamaño más pequeño para pantallas móviles */
+}
+
+nav ul {
+    list-style: none;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+
+.icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.icons a {
+    margin: 0 10px;
+}
+
+.icons img {
+    width: 40px;
+    height: 40px;
+    justify-content: end;
+}
+
+.logo_J {
+    width: 150px; /* Más pequeño para pantallas móviles */
+    height: 100px;
+}
+
+/* Estilos para el slideshow en pantallas móviles */
+.slideshow-container {
+    position: relative;
+    max-width: 100%;
+    margin: 20px auto;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mySlides {
+    display: none;
+}
+
+.mySlides img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-contact {
+    margin-top: 20px;
+}
+
+.footer-contact p {
+    margin: 5px 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+/* Media Queries para pantallas más grandes como tablets y desktop */
+@media (min-width: 768px) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo h1 {
+        font-size: 24px;
+    }
+
+    nav ul {
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    nav ul li a {
+        font-size: 18px;
+    }
+
+    .icons img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .logo_J {
+        width: 200px;
+        height: 150px;
+    }
+    .lista_menu_header{
+        display:flex;
+    }
+    
+}
+
+@media (min-width: 1024px) {
+    body {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .slideshow-container {
+        max-width: 90%;
+    }
+
+    .footer-contact {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+}
