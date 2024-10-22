@@ -10,7 +10,8 @@ body {
     line-height: 1.6;
     margin: 0 auto;
     padding: 0 15px;
-    max-width: 100%; /* Ocupa todo el ancho en móviles */
+    max-width: 100%;
+    /* Ocupa todo el ancho en móviles */
 }
 
 header {
@@ -18,30 +19,31 @@ header {
     flex-direction: row;
     align-items: center;
     padding: 10px 0;
-    background-color: #fff;
+    background-color: #d1ffcb;
     border-bottom: 2px solid #ddd;
     justify-content: space-between;
-    
+
 }
 
 
-.lista_menu_header{
+.lista_menu_header {
     display: none;
 }
 
 
 ul {
-    text-align: left; 
-    margin: 10px auto; 
-    padding-left: 20px; 
+    text-align: left;
+    margin: 10px auto;
+    padding-left: 20px;
 }
 
 ul li {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 
 ul li b {
-    font-weight: bold; /* Destaca el texto */
+    font-weight: bold;
+    /* Destaca el texto */
 }
 
 
@@ -54,7 +56,8 @@ ul li b {
 
 .logo h1 {
     color: #3b5d3b;
-    font-size: 20px; /* Tamaño más pequeño para pantallas móviles */
+    font-size: 20px;
+    /* Tamaño más pequeño para pantallas móviles */
 }
 
 nav ul {
@@ -93,11 +96,10 @@ nav ul li a {
 
 
 .logo_J {
-    width: 150px; /* Más pequeño para pantallas móviles */
+    width: 150px;
     height: 100px;
 }
 
-/* Estilos para el slideshow en pantallas móviles */
 .slideshow-container {
     position: relative;
     max-width: 100%;
@@ -134,12 +136,162 @@ li {
     margin: 10px 0;
 }
 
-/* Media Queries para pantallas más grandes como tablets y desktop */
+/* Estilos para el html de joyeria*/
+
+#titulo_tienda {
+    text-align: start;
+    padding: 50px 0;
+    margin: 20px 0;
+    font-size: 50px;
+    border-bottom: 2px solid #000;
+
+}
+
+.tienda-section {
+    padding: 2rem 0;
+    text-align: center;
+    background-color: #fff;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.grid-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+    transform: scale(1.05);
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.grid-item h3 {
+    margin: 0.5rem 0;
+    font-size: 18px;
+}
+
+.grid-item p {
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+.btn-more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #d1ffcb;
+    color: #000000;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.search-box input[type="text"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #666;
+}
+
+.search-box .search-button {
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #999;
+}
+
+.categorias {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.categorias h2 {
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.categoria-lista {
+    list-style: none;
+    padding-left: 0;
+}
+
+.categoria-item {
+    margin: 5px 0;
+}
+
+.categoria-item a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.categorias h2{
+
+    margin-bottom: 10px;
+    text-align:start;
+}
+
+.categoria-item a:hover {
+    text-decoration: underline;
+}
+
+.subcategoria-lista {
+    list-style: none;
+    padding-left: 20px;
+    display: none;
+}
+
+.subcategoria-item a {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+}
+
+.subcategoria-item a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
 @media (min-width: 768px) {
     header {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        background-color: #fcfcfc;
     }
 
     .logo h1 {
@@ -164,10 +316,17 @@ li {
         width: 200px;
         height: 150px;
     }
-    .lista_menu_header{
-        display:flex;
+
+    .lista_menu_header {
+        display: flex;
     }
+
+    .Tienda {
+        display: none;
+    }
+
     
+
 }
 
 @media (min-width: 1024px) {
@@ -184,5 +343,9 @@ li {
         display: flex;
         justify-content: space-between;
         padding: 0 20px;
+    }
+
+    .Tienda {
+        display: none;
     }
 }
