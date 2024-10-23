@@ -253,10 +253,10 @@ li {
     font-size: 16px;
 }
 
-.categorias h2{
+.categorias h2 {
 
     margin-bottom: 10px;
-    text-align:start;
+    text-align: start;
 }
 
 .categoria-item a:hover {
@@ -278,6 +278,49 @@ li {
 .subcategoria-item a:hover {
     text-decoration: underline;
 }
+
+
+/* EStilos para html items */
+
+/* Ajustes de diseño para el contenedor de detalles del producto */
+.detalles-producto {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    padding: 20px;
+}
+
+.producto-detalle img {
+    max-width: 100%; /* Asegura que la imagen no sobresalga del contenedor */
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.producto-info {
+    width: 100%; /* Asegura que el contenido ocupe todo el ancho disponible */
+    text-align: center; /* Centra el texto en dispositivos móviles */
+}
+
+.producto-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.producto-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos del formulario en columna */
+    align-items: center;
+}
+
+
 
 
 
@@ -325,7 +368,10 @@ li {
         display: none;
     }
 
+
     
+
+
 
 }
 
