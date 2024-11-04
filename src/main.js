@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
         for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";  // Oculta todas las diapositivas
+            slides[i].style.display = "none";  
         }
         slideIndex++;
-        if (slideIndex > slides.length) { slideIndex = 1 }  // Reinicia al principio
-        slides[slideIndex - 1].style.display = "block";  // Muestra la diapositiva actual
-        setTimeout(showSlides, 3000);  // Cambia cada 3 segundos
+        if (slideIndex > slides.length) { slideIndex = 1 }  
+        slides[slideIndex - 1].style.display = "block";  
+        setTimeout(showSlides, 3000);  
     }
 });
