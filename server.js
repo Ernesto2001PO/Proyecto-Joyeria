@@ -9,7 +9,7 @@ const PORT = 3000;
  
 
 // Middleware
-app.use(express.static('public'));
+app.use(express.static('public/html'));
 
 // Iniciar servidor
 app.listen(PORT, () => {
