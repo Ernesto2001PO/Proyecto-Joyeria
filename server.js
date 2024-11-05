@@ -105,25 +105,7 @@ app.get('/api/item_carrito/:id', async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//==========POST================
 // POST localhost:3000/api/usuarios
 app.post('/api/usuarios', async (req, res) => {
     try {
@@ -228,6 +210,62 @@ app.post('/api/carrito-anonimo', async (req, res) => {
         res.status(500).json({ error: 'Error al agregar producto al carrito anónimo' });
     }
 });
+
+
+app.post('/api/orden', async (req, res) => {
+    try {
+        const { usuario_id } = req.body;
+
+        // Verificar si el usuario tiene un carrito
+        const carrito = await db.query('SELECT * FROM carrito WHERE usuario_id = $1', [usuario_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontró un carrito para este usuario.' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        // Obtener los items del carrito
+        const itemsCarrito = await db.query('SELECT * FROM itemcarrito WHERE carrito_id = $1', [carrito_id]);
+
+        if (itemsCarrito.rows.length === 0) {
+            return res.status(400).json({ error: 'El carrito está vacío.' });
+        }
+
+        // Calcular el total de la orden
+        const total = itemsCarrito.rows.reduce((acc, item) => acc + item.cantidad * item.precio, 0); // Verifica que `precio` existe en `itemcarrito`
+
+        // Crear la orden
+        const nuevaOrden = await db.query(
+            'INSERT INTO orden (usuario_id, total, estado, creado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
+            [usuario_id, total, 'pendiente']
+        );
+
+        const orden_id = nuevaOrden.rows[0].id;
+
+        // Transferir los items del carrito a la tabla `itemorden`
+        for (const item of itemsCarrito.rows) {
+            await db.query(
+                'INSERT INTO itemorden (orden_id, producto_id, cantidad, precio) VALUES ($1, $2, $3, $4)',
+                [orden_id, item.producto_id, item.cantidad, item.precio]
+            );
+        }
+
+        // Limpiar el carrito
+        await db.query('DELETE FROM itemcarrito WHERE carrito_id = $1', [carrito_id]);
+
+        res.status(201).json({
+            mensaje: 'Orden registrada exitosamente',
+            orden: nuevaOrden.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Error al registrar la orden:', err.stack); // Muestra más detalles del error
+        res.status(500).json({ error: 'Error al registrar la orden' });
+    }
+});
+
+
 
 
 
