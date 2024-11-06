@@ -87,14 +87,14 @@ app.get('/api/categorias', async (req, res) => {
 // localhost:3000/api/carrito/:id
 app.get('/api/item_carrito/:id', async (req, res) => {
     try {
-        const  id  = parseInt(req.params.id,10);
-        const resultado = await db.query('SELECT * FROM itemcarrito WHERE id = $1', [id]);
+        const id = parseInt(req.params.id, 10);
+        const resultado = await db.query('SELECT * FROM itemcarrito WHERE carrito_id = $1', [id]);
 
         if (resultado.rows.length === 0) {
             return res.status(404).json({ error: 'Item no encontrado' });
         }
 
-        res.json(resultado.rows[0]);
+        res.json(resultado.rows);
 
     } catch (err) {
         console.error('Error al obtener item del carrito:', err);
@@ -103,6 +103,29 @@ app.get('/api/item_carrito/:id', async (req, res) => {
 
 
 });
+
+
+
+
+app.get('/api/item_carrito/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const resultado = await db.query('SELECT * FROM itemorden WHERE carrito_id = $1', [id]);
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado' });
+        }
+
+        res.json(resultado.rows);
+
+    } catch (err) {
+        console.error('Error al obtener item de la orden:', err);
+        res.status(500).json({ error: 'Error al obtener item del carrito' });
+    }
+
+
+});
+
 
 
 //==========POST================
@@ -140,13 +163,13 @@ app.post('/api/productos', async (req, res) => {
 
 app.post('/api/carrito', async (req, res) => {
     try {
-        const { usuario_id, producto_id, cantidad } = req.body;
+        const { usuario_id, producto_id, cantidad = 1 } = req.body; // Si no se proporciona cantidad, se usa 1 por defecto.
 
-        // Primero, verifica si el carrito ya existe para el usuario
+        // Verificar si el usuario tiene un carrito
         let carrito = await db.query('SELECT id FROM carrito WHERE usuario_id = $1', [usuario_id]);
 
         if (carrito.rows.length === 0) {
-            // Si no existe, crea un nuevo carrito para el usuario
+            // Crear un nuevo carrito si no existe
             const nuevoCarrito = await db.query(
                 'INSERT INTO carrito (usuario_id, creado_en) VALUES ($1, NOW()) RETURNING *',
                 [usuario_id]
@@ -156,21 +179,42 @@ app.post('/api/carrito', async (req, res) => {
 
         const carrito_id = carrito.rows[0].id;
 
-        // Inserta el producto en el carrito
-        const resultado = await db.query(
-            'INSERT INTO itemcarrito (carrito_id, producto_id, cantidad, agregado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
-            [carrito_id, producto_id, cantidad]
+        // Verificar si el producto ya existe en el carrito
+        const itemExistente = await db.query(
+            'SELECT * FROM itemcarrito WHERE carrito_id = $1 AND producto_id = $2',
+            [carrito_id, producto_id]
         );
 
-        res.status(201).json({
-            mensaje: 'Producto agregado al carrito',
-            item: resultado.rows[0]
-        });
+        if (itemExistente.rows.length > 0) {
+            // Si el producto ya está en el carrito, incrementar la cantidad
+            const nuevaCantidad = itemExistente.rows[0].cantidad + cantidad;
+            await db.query(
+                'UPDATE itemcarrito SET cantidad = $1, agregado_en = NOW() WHERE id = $2',
+                [nuevaCantidad, itemExistente.rows[0].id]
+            );
+            res.status(200).json({
+                mensaje: 'Cantidad actualizada en el carrito',
+                item: { producto_id, cantidad: nuevaCantidad }
+            });
+        } else {
+            // Si el producto no está en el carrito, agregarlo
+            const resultado = await db.query(
+                'INSERT INTO itemcarrito (carrito_id, producto_id, cantidad, agregado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
+                [carrito_id, producto_id, cantidad]
+            );
+            res.status(201).json({
+                mensaje: 'Producto agregado al carrito',
+                item: resultado.rows[0]
+            });
+        }
     } catch (err) {
         console.error('Error al agregar producto al carrito:', err);
         res.status(500).json({ error: 'Error al agregar producto al carrito' });
     }
 });
+
+
+
 
 
 app.post('/api/carrito-anonimo', async (req, res) => {
@@ -212,28 +256,35 @@ app.post('/api/carrito-anonimo', async (req, res) => {
 });
 
 
+// POST localhost:3000/api/orden
 app.post('/api/orden', async (req, res) => {
     try {
         const { usuario_id } = req.body;
-
         // Verificar si el usuario tiene un carrito
         const carrito = await db.query('SELECT * FROM carrito WHERE usuario_id = $1', [usuario_id]);
+
+        if (!usuario_id) {
+            return res.status(400).json({ error: 'usuario_id es requerido.' });
+        }
 
         if (carrito.rows.length === 0) {
             return res.status(404).json({ error: 'No se encontró un carrito para este usuario.' });
         }
-
         const carrito_id = carrito.rows[0].id;
 
-        // Obtener los items del carrito
-        const itemsCarrito = await db.query('SELECT * FROM itemcarrito WHERE carrito_id = $1', [carrito_id]);
+        // Obtener los items del carrito con sus precios
+        const itemsCarrito = await db.query(`
+            SELECT ic.producto_id,p.nombre,ic.cantidad, p.precio
+            FROM itemcarrito ic
+            JOIN producto p ON ic.producto_id = p.id
+            WHERE ic.carrito_id = $1
+        `, [carrito_id]);
 
         if (itemsCarrito.rows.length === 0) {
             return res.status(400).json({ error: 'El carrito está vacío.' });
         }
-
         // Calcular el total de la orden
-        const total = itemsCarrito.rows.reduce((acc, item) => acc + item.cantidad * item.precio, 0); // Verifica que `precio` existe en `itemcarrito`
+        const total = itemsCarrito.rows.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
 
         // Crear la orden
         const nuevaOrden = await db.query(
@@ -260,15 +311,10 @@ app.post('/api/orden', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Error al registrar la orden:', err.stack); // Muestra más detalles del error
+        console.error('Error al registrar la orden:', err);
         res.status(500).json({ error: 'Error al registrar la orden' });
     }
 });
-
-
-
-
-
 
 
 
