@@ -8,6 +8,9 @@ let session_id = localStorage.getItem('session_id');
 if (!session_id) {
     session_id = generateSessionId();
     localStorage.setItem('session_id', session_id);
+    console.log('Se ha creado un nuevo session_id:', session_id);
+} else {
+    console.log('Se ha recuperado el session_id existente:', session_id);
 }
 
 // Usar session_id para agregar productos al carrito
@@ -27,6 +30,3 @@ function addToCart(producto_id, cantidad) {
         console.error('Error al agregar al carrito:', error);
     });
 }
-
-// Ejemplo de uso
-addToCart(3, 2);  // Agrega 2 unidades del producto con ID 3
