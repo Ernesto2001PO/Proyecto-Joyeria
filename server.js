@@ -16,7 +16,11 @@ app.use(express.static('public'));
 // localhost:3000/api/productos
 app.get('/api/productos', async (req, res) => {
     try {
-        const resultado = await db.query('SELECT * FROM producto');
+        const resultado = await db.query(`
+            SELECT p.id,p.nombre,p.descripcion,p.precio,p.stock,p.categoria_id,p.creado_en,ip.url_imagen
+            FROM producto p
+            LEFT JOIN imagenproducto ip ON p.id = ip.producto_id
+        `);
         res.json(resultado.rows);
     } catch (err) {
         console.error('Error al consultar la base de datos:', err);
@@ -126,6 +130,22 @@ app.get('/api/item_carrito/:id', async (req, res) => {
 
 });
 
+//===================DELETE======================================
+
+// DELETE localhost:3000/api/productos/:id
+app.delete('/api/productos/:id', (req, res) => {
+    try {
+        const id = req.params.id;
+        resultado = db.query('DELETE FROM producto WHERE id = $1',
+            [id]);
+        resultado
+        res.status(200).send({ succes: true })
+    } catch (err) {
+        console.error('Error al eliminar el producto ', err); C
+        res.status(500).json({ error: 'Error al eliminar el producto ' });
+    }
+
+});
 
 
 //==========POST================
