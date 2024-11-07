@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(express.static('public'));
 
 
-
 //===========RUTAS===================
 // localhost:3000/api/productos
 app.get('/api/productos', async (req, res) => {
@@ -46,14 +45,12 @@ app.get('/api/categorias', async (req, res) => {
         const resultado = await db.query(
             'SELECT id, name, descripcion, categoria_padre_id FROM categoria'
         );
-
         // Crear un diccionario para las categorías principales
         const categorias = {};
 
         // Primero, inicializamos todas las categorías principales con un array de subcategorías vacío
         resultado.rows.forEach(categoria => {
             if (!categoria.categoria_padre_id) {
-                // Es una categoría principal, la agregamos al diccionario
                 categorias[categoria.id] = {
                     id: categoria.id,
                     name: categoria.name,
@@ -62,11 +59,8 @@ app.get('/api/categorias', async (req, res) => {
                 };
             }
         });
-
-        // Luego, iteramos nuevamente para asignar las subcategorías a su categoría principal
         resultado.rows.forEach(categoria => {
             if (categoria.categoria_padre_id) {
-                // Es una subcategoría, agregamos a la categoría principal correspondiente
                 const categoriaPadre = categorias[categoria.categoria_padre_id];
                 if (categoriaPadre) {
                     categoriaPadre.subcategorias.push({
@@ -77,9 +71,7 @@ app.get('/api/categorias', async (req, res) => {
                 }
             }
         });
-        // Convertir el diccionario en un array para la respuesta final
         const categoriasArray = Object.values(categorias);
-
         res.json(categoriasArray);
     } catch (err) {
         console.error('Error al obtener categorías:', err);
@@ -92,7 +84,7 @@ app.get('/api/categorias', async (req, res) => {
 app.get('/api/item_carrito/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id, 10);
-        const resultado = await db.query('SELECT * FROM itemcarrito WHERE carrito_id = $1', [id]);
+        const resultado = await db.query('SELECT p.id,p.nombre,p.descripcion,p.precio,p.stock,p.categoria_id,p.creado_en,ip.url_imagen FROM producto p LEFT JOIN imagenproducto ip ON p.id = ip.producto_id WHERE carrito_id = $1', [id]);
 
         if (resultado.rows.length === 0) {
             return res.status(404).json({ error: 'Item no encontrado' });
@@ -110,7 +102,7 @@ app.get('/api/item_carrito/:id', async (req, res) => {
 
 
 
-
+// localhost:3000/api/item_orden/:id
 app.get('/api/item_carrito/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id, 10);
@@ -126,25 +118,26 @@ app.get('/api/item_carrito/:id', async (req, res) => {
         console.error('Error al obtener item de la orden:', err);
         res.status(500).json({ error: 'Error al obtener item del carrito' });
     }
-
-
 });
 
-//===================DELETE======================================
 
-// DELETE localhost:3000/api/productos/:id
-app.delete('/api/productos/:id', (req, res) => {
+app.get('/api/productos/:id', async (req, res) => {
     try {
-        const id = req.params.id;
-        resultado = db.query('DELETE FROM producto WHERE id = $1',
-            [id]);
-        resultado
-        res.status(200).send({ succes: true })
-    } catch (err) {
-        console.error('Error al eliminar el producto ', err); C
-        res.status(500).json({ error: 'Error al eliminar el producto ' });
-    }
+        const id = parseInt(req.params.id, 10);
+        const resultado = await db.query(
+            'SELECT p.*, ip.url_imagen FROM producto p LEFT JOIN imagenproducto ip ON p.id = ip.producto_id WHERE p.id = $1',
+            [id]
+        );
 
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+
+        res.json(resultado.rows[0]);
+    } catch (err) {
+        console.error('Error al obtener el producto:', err);
+        res.status(500).json({ error: 'Error al obtener el producto' });
+    }
 });
 
 
@@ -335,6 +328,25 @@ app.post('/api/orden', async (req, res) => {
         res.status(500).json({ error: 'Error al registrar la orden' });
     }
 });
+
+
+//===================DELETE======================================
+
+// DELETE localhost:3000/api/productos/:id
+app.delete('/api/productos/:id', (req, res) => {
+    try {
+        const id = req.params.id;
+        resultado = db.query('DELETE FROM producto WHERE id = $1',
+            [id]);
+        resultado
+        res.status(200).send({ succes: true })
+    } catch (err) {
+        console.error('Error al eliminar el producto ', err); C
+        res.status(500).json({ error: 'Error al eliminar el producto ' });
+    }
+
+});
+
 
 
 

@@ -1,6 +1,4 @@
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
     fetch('http://localhost:3000/api/productos')
         .then(response => response.json())
@@ -13,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="grid-item">
                         <img src="/${producto.url_imagen}" alt="${producto.nombre}">
                         <h3>${producto.nombre}</h3>
-                        <p>Precio: ${producto.precio} Bs</p>
-                        <a href="#" class="btn-more">More</a>
+                        <p>Precio: ${parseInt(producto.precio)} Bs</p>
+                        <a href="../html/items.html?id=${producto.id}" class="btn-more">More</a>
                     </div>
                 `;
                 gridContainer.innerHTML += productHTML;
@@ -24,3 +22,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al cargar los productos:', error);
         });
 });
+
+

@@ -43,15 +43,17 @@ ul li {
 
 ul li b {
     font-weight: bold;
-    /* Destaca el texto */
 }
-
-
-
 
 
 .logo {
     text-align: end;
+}
+.logo img {
+    width: 150px;
+    height: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .logo h1 {
@@ -92,12 +94,6 @@ nav ul li a {
     width: 40px;
     height: 40px;
     justify-content: end;
-}
-
-
-.logo_J {
-    width: 150px;
-    height: 100px;
 }
 
 .slideshow-container {
@@ -284,26 +280,38 @@ li {
 
 /* EStilos para html items */
 
-/* Ajustes de diseño para el contenedor de detalles del producto */
 .detalles-producto {
+
+    width: 100%;
     display: flex;
     flex-direction: column; 
     align-items: center;
     padding: 20px;
 }
 
-.producto-detalle img {
-    max-width: 100%; /* Asegura que la imagen no sobresalga del contenedor */
+.image-container-items {
+    width: 100%; 
+    max-width: 600px; 
     height: auto;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #eee2e2de; 
+    overflow: hidden;
 }
 
+.image-container-items img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain;
+    display: block;
+}
+
+
+
 .producto-info {
-    width: 100%; /* Asegura que el contenido ocupe todo el ancho disponible */
-    text-align: center; /* Centra el texto en dispositivos móviles */
+    width: 100%; 
+    text-align: center; 
 }
 
 .producto-info h2 {
@@ -318,7 +326,7 @@ li {
 
 form {
     display: flex;
-    flex-direction: column; /* Coloca los elementos del formulario en columna */
+    flex-direction: column; 
     align-items: center;
 }
 
@@ -370,6 +378,25 @@ form {
         display: none;
     }
 
+    .image-container-items {
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 20px;
+        margin: 0 auto;
+
+
+      
+    }
+    
+    .image-container-items img {
+        width: 100%; 
+        height: auto; 
+        object-fit: cover; 
+
+    
+      
+    }
+
 
     
 
@@ -395,5 +422,25 @@ form {
 
     .Tienda {
         display: none;
+    }
+    .producto-info {
+        width: 100%; 
+        text-align: center;
+    }
+    
+    .producto-info h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .producto-info p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    form {
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
     }
 }
