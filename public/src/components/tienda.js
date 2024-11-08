@@ -4,13 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             const gridContainer = document.querySelector('.grid-container');
-            gridContainer.innerHTML = ''; 
+            gridContainer.innerHTML = '';
 
             data.forEach(producto => {
                 const productHTML = `
                     <div class="grid-item">
                         <img src="/${producto.url_imagen}" alt="${producto.nombre}">
                         <h3>${producto.nombre}</h3>
+                                
+    
                         <p>Precio: ${parseInt(producto.precio)} Bs</p>
                         <a href="../html/items.html?id=${producto.id}" class="btn-more">More</a>
                     </div>

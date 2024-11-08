@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const db = require('./public/src/conectar');
+const db = require('./public/src/services/conectar');
 const PORT = process.env.PORT || 3000;
 
 // Middlewares 
@@ -30,12 +30,12 @@ app.get('/api/productos', async (req, res) => {
 // localhost:3000/api/usuarios
 app.get('/api/usuarios', async (req, res) => {
     try {
-        const resultado = await db.query('SELECT * FROM categoria');
+        const resultado = await db.query('SELECT * FROM usuario');
         res.json(resultado.rows);
 
     } catch (err) {
         console.error('Error al consultar la base de datos:', err);
-        res.status(500).json({ error: 'Error al consultar la base de datos' });
+        res.status(500).jsons({ error: 'Error al consultar la base de datos' });
     }
 });
 
@@ -99,8 +99,6 @@ app.get('/api/item_carrito/:id', async (req, res) => {
 
 
 });
-
-
 
 // localhost:3000/api/item_orden/:id
 app.get('/api/item_carrito/:id', async (req, res) => {
@@ -174,15 +172,39 @@ app.post('/api/productos', async (req, res) => {
 });
 
 
+app.post('/api/login', async (req, res) => {
+    try {
+        const { correo, contrasena } = req.body;
+        const resultado = await db.query('SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2', [correo, contrasena]);
+        
+        if (resultado.rows.length === 0) {
+            return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
+        }
+        res.json({
+            mensaje: 'Bienvenido',
+            usuario: {
+                id: resultado.rows[0].id,
+                nombre_usuario: resultado.rows[0].nombre_usuario,
+                correo: resultado.rows[0].correo
+            }
+        });
+    } catch (err) {
+        console.error('Error al hacer el login:', err);
+        res.status(500).json({ error: 'Error al hacer el login' });
+    }
+});
+
+
+
+
+
 app.post('/api/carrito', async (req, res) => {
     try {
-        const { usuario_id, producto_id, cantidad = 1 } = req.body; // Si no se proporciona cantidad, se usa 1 por defecto.
+        const { usuario_id, producto_id, cantidad = 1 } = req.body;
 
-        // Verificar si el usuario tiene un carrito
         let carrito = await db.query('SELECT id FROM carrito WHERE usuario_id = $1', [usuario_id]);
 
         if (carrito.rows.length === 0) {
-            // Crear un nuevo carrito si no existe
             const nuevoCarrito = await db.query(
                 'INSERT INTO carrito (usuario_id, creado_en) VALUES ($1, NOW()) RETURNING *',
                 [usuario_id]
@@ -192,14 +214,12 @@ app.post('/api/carrito', async (req, res) => {
 
         const carrito_id = carrito.rows[0].id;
 
-        // Verificar si el producto ya existe en el carrito
         const itemExistente = await db.query(
             'SELECT * FROM itemcarrito WHERE carrito_id = $1 AND producto_id = $2',
             [carrito_id, producto_id]
         );
 
         if (itemExistente.rows.length > 0) {
-            // Si el producto ya está en el carrito, incrementar la cantidad
             const nuevaCantidad = itemExistente.rows[0].cantidad + cantidad;
             await db.query(
                 'UPDATE itemcarrito SET cantidad = $1, agregado_en = NOW() WHERE id = $2',
@@ -210,7 +230,6 @@ app.post('/api/carrito', async (req, res) => {
                 item: { producto_id, cantidad: nuevaCantidad }
             });
         } else {
-            // Si el producto no está en el carrito, agregarlo
             const resultado = await db.query(
                 'INSERT INTO itemcarrito (carrito_id, producto_id, cantidad, agregado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
                 [carrito_id, producto_id, cantidad]
@@ -227,9 +246,6 @@ app.post('/api/carrito', async (req, res) => {
 });
 
 
-
-
-
 app.post('/api/carrito-anonimo', async (req, res) => {
     try {
         const { session_id, producto_id, cantidad } = req.body;
@@ -238,11 +254,9 @@ app.post('/api/carrito-anonimo', async (req, res) => {
             return res.status(400).json({ error: 'session_id es requerido para carritos anónimos.' });
         }
 
-        // Busca el carrito anónimo asociado a este `session_id`
         let carrito = await db.query('SELECT id FROM carrito WHERE usuario_id IS NULL AND session_id = $1', [session_id]);
 
         if (carrito.rows.length === 0) {
-            // Si no existe un carrito anónimo para este `session_id`, crea uno nuevo
             const nuevoCarrito = await db.query(
                 'INSERT INTO carrito (usuario_id, session_id, creado_en) VALUES (NULL, $1, NOW()) RETURNING *',
                 [session_id]
@@ -250,18 +264,36 @@ app.post('/api/carrito-anonimo', async (req, res) => {
             carrito = nuevoCarrito;
         }
 
+
         const carrito_id = carrito.rows[0].id;
 
-        // Inserta el producto en el carrito anónimo
-        const resultado = await db.query(
-            'INSERT INTO itemcarrito (carrito_id, producto_id, cantidad, agregado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
-            [carrito_id, producto_id, cantidad]
+        const itemExistente = await db.query(
+            'SELECT * FROM itemcarrito WHERE carrito_id = $1 AND producto_id = $2',
+            [carrito_id, producto_id]
         );
 
-        res.status(201).json({
-            mensaje: 'Producto agregado al carrito anónimo',
-            item: resultado.rows[0]
-        });
+        if (itemExistente.rows.length > 0) {
+            const nuevaCantidad = itemExistente.rows[0].cantidad + cantidad;
+            await db.query(
+                'UPDATE itemcarrito SET cantidad = $1, agregado_en = NOW() WHERE id = $2',
+                [nuevaCantidad, itemExistente.rows[0].id]
+            );
+            res.status(200).json({
+                mensaje: 'Cantidad actualizada en el carrito anónimo',
+                item: { producto_id, cantidad: nuevaCantidad }
+            });
+        } else {
+            const resultado = await db.query(
+                'INSERT INTO itemcarrito (carrito_id, producto_id, cantidad, agregado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
+                [carrito_id, producto_id, cantidad]
+
+            );
+
+            res.status(201).json({
+                mensaje: 'Producto agregado al carrito anónimo',
+                item: resultado.rows[0]
+            });
+        }
     } catch (err) {
         console.error('Error al agregar producto al carrito anónimo:', err);
         res.status(500).json({ error: 'Error al agregar producto al carrito anónimo' });
@@ -273,7 +305,6 @@ app.post('/api/carrito-anonimo', async (req, res) => {
 app.post('/api/orden', async (req, res) => {
     try {
         const { usuario_id } = req.body;
-        // Verificar si el usuario tiene un carrito
         const carrito = await db.query('SELECT * FROM carrito WHERE usuario_id = $1', [usuario_id]);
 
         if (!usuario_id) {
@@ -285,7 +316,6 @@ app.post('/api/orden', async (req, res) => {
         }
         const carrito_id = carrito.rows[0].id;
 
-        // Obtener los items del carrito con sus precios
         const itemsCarrito = await db.query(`
             SELECT ic.producto_id,p.nombre,ic.cantidad, p.precio
             FROM itemcarrito ic
@@ -296,10 +326,8 @@ app.post('/api/orden', async (req, res) => {
         if (itemsCarrito.rows.length === 0) {
             return res.status(400).json({ error: 'El carrito está vacío.' });
         }
-        // Calcular el total de la orden
         const total = itemsCarrito.rows.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
 
-        // Crear la orden
         const nuevaOrden = await db.query(
             'INSERT INTO orden (usuario_id, total, estado, creado_en) VALUES ($1, $2, $3, NOW()) RETURNING *',
             [usuario_id, total, 'pendiente']
@@ -307,7 +335,6 @@ app.post('/api/orden', async (req, res) => {
 
         const orden_id = nuevaOrden.rows[0].id;
 
-        // Transferir los items del carrito a la tabla `itemorden`
         for (const item of itemsCarrito.rows) {
             await db.query(
                 'INSERT INTO itemorden (orden_id, producto_id, cantidad, precio) VALUES ($1, $2, $3, $4)',
@@ -315,7 +342,6 @@ app.post('/api/orden', async (req, res) => {
             );
         }
 
-        // Limpiar el carrito
         await db.query('DELETE FROM itemcarrito WHERE carrito_id = $1', [carrito_id]);
 
         res.status(201).json({
@@ -346,9 +372,6 @@ app.delete('/api/productos/:id', (req, res) => {
     }
 
 });
-
-
-
 
 
 // Iniciar servidor
