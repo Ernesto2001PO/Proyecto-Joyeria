@@ -2,7 +2,12 @@ const express = require('express');
 const app = express();
 const db = require('./public/src/services/conectar');
 const PORT = process.env.PORT || 3000;
+const cors = require('cors');
 
+
+
+
+app.use(cors()); // Permite solicitudes desde cualquier origen
 // Middlewares 
 app.use(express.json());
 

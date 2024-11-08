@@ -12,19 +12,20 @@
     <div class="login-container">
         <img src="../img/imageneslogin/user.png" alt="user">
         <div class="login-box">
-            <form>
+            <form  onsubmit="capturarLogin(event)">
                 <div class="input-group">
-                    <input type="text" name="user-code" placeholder="Código de Usuario" required>
+                    <input type="text" id="user-email"  name="user-code" placeholder="Correo" required>
                 </div>
                 <div class="input-group">
-                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <input type="password"  id="user-password"  name="password" placeholder="Contraseña" required>
                 </div>
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="login-btn">Iniciar Sesion</button>
             </form>
-            <p>Olvido su contraseña ? <a href="#">Click Here</a></p>`
+            <p>Olvido su contraseña ? <a href="#">Click Here</a></p>
             <p>¿No tienes una cuenta? <a href="../html/formulario.html">Regístrate</a></p>
         </div>
     </div>
+    <script src="../src/services/login.js"></script>
 </body>
 
 </html>
