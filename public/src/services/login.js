@@ -1,3 +1,5 @@
+// Capturar el login
+
 function login(correo, contrasena) {
     fetch('http://localhost:3000/api/login', {
         method: 'POST',
@@ -11,7 +13,6 @@ function login(correo, contrasena) {
         if (data.usuario) {
             localStorage.setItem('usuario_id', data.usuario.id);
             localStorage.setItem('usuario_nombre', data.usuario.nombre_usuario);
-            window.location.href = 'joyeria.html';
             console.log('Usuario autenticado:', data.usuario);
         } else {
             console.error('Error al iniciar sesión:', data.error);

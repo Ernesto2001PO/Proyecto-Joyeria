@@ -1,6 +1,6 @@
 .footer-contact img[alt="Ubicación"],
 .footer-contact img[alt="Teléfono"],
 .footer-contact img[alt="Correo"] {
-    width: 50px; /* Ajusta el tamaño según tus necesidades */
+    width: 50px; 
     margin: 0 10px;
 }

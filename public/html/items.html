@@ -21,6 +21,18 @@
                 <li><a href="#">Contáctanos</a></li>
             </ul>
         </nav>
+        <div id="usuario-info">
+            <span id="nombre-usuario"></span>
+            <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+        <div class="icons">
+            <span id="nombre-usuario"></span>
+            <a href="#"><img src="../img/imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
+            <a href="#"><img src="../img/imagenesheader/carrito_de_compra.png" alt="Carrito de compras"></a>
+            <div class="respmenu">
+                <a href="#"><img src="../img/imagenesheader/tienda.png" alt="Tienda" class="Tienda"></a>
+            </div>
+        </div>
     </header>
 
     <section class="detalles-producto">
@@ -39,5 +51,7 @@
             </div>
     </footer>
     <script src="../src/components/items.js"></script>
+    <script src="../src/services/login.js"></script>
+    <script src="../src/components/loginUI.js"></script>
 </body>
 </html>

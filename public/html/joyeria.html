@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@
         <h1>Joyería Nats</h1>
     </div>
     <nav>
+        
         <ul class="lista_menu_header">
             <li><a href="../index.html">Inicio</a></li>
             <li><a href="../html/joyeria.html">Joyería NATS</a></li>
@@ -21,6 +22,10 @@
             <li><a href="#">Contáctanos</a></li>
         </ul>
     </nav>
+    <div id="usuario-info">
+        <span id="nombre-usuario"></span>
+        <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
     <div class="icons">
         <span id="nombre-usuario"></span>
         <a href="#"><img src="../img/imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
@@ -80,9 +85,13 @@
                 <p><img src="../img/imagenesfooter/email.png" alt="Correo">ejemplocorreo@gmail.com</p>
             </div>
     </footer>
-    <script src="../src/components/banner.js"></script>
-    <script src="../src/carrito.js"></script>
+
+
+    <script src="../src/services/carrito.js"></script>
     <script src="../src/components/tienda.js"></script>
+    <script src="../src/components/loginUI.js"></script>
+    <script src="../src/services/login.js"></script>
+
 </body>
 
 </html>

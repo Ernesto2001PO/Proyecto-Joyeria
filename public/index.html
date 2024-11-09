@@ -24,6 +24,10 @@
             </ul>
         </nav>
         <div class="icons">
+            <div id="usuario-info">
+                <span id="nombre-usuario"></span>
+                <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
             <a href="./html/login.html"><img src="img/imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
             <a href=""><img src="img/imagenesheader/carrito_de_compra.png" alt="Carrito de compras"></a>
             <div class="respmenu">
@@ -106,7 +110,10 @@
             </footer>
 
             <script src="src/components/banner.js"></script>
-            <script src="src/carrito.js"></script>
+            <script src="src/services/carrito.js"></script>
+            <script src="src/services/login.js"></script>
+            <script src="src/components/loginUI.js"></script>
+
 </body>
 
 </html>
