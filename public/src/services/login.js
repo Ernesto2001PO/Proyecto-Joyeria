@@ -30,6 +30,7 @@ function capturarLogin(event) {
     const contrasena = document.getElementById('user-password').value;
 
     login(correo, contrasena);
+    
 }
 
 
