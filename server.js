@@ -50,10 +50,8 @@ app.get('/api/categorias', async (req, res) => {
         const resultado = await db.query(
             'SELECT id, name, descripcion, categoria_padre_id FROM categoria'
         );
-        // Crear un diccionario para las categorías principales
         const categorias = {};
 
-        // Primero, inicializamos todas las categorías principales con un array de subcategorías vacío
         resultado.rows.forEach(categoria => {
             if (!categoria.categoria_padre_id) {
                 categorias[categoria.id] = {
