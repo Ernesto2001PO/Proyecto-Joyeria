@@ -1,0 +1,19 @@
+.carrito-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.carrito-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+.carrito-item img {
+    width: 100px;
+    height: 100px;
+}
+.carrito-item button {
+    margin-left: auto;
+}

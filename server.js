@@ -82,12 +82,89 @@ app.get('/api/categorias', async (req, res) => {
     }
 });
 
+app.get('/api/carrito', async (req, res) => {
+    try {
+        const { usuario_id } = req.query;
+
+        if (!usuario_id) {
+            return res.status(400).json({ error: 'Se requiere usuario_id para obtener el carrito' });
+        }
+
+        const carrito = await db.query(
+            'SELECT * FROM carrito WHERE usuario_id = $1',
+            [usuario_id]
+        );
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontró un carrito para este usuario' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        const items = await db.query(
+            `SELECT ic.id, ic.cantidad, p.nombre, p.precio,ip.url_imagen
+             FROM itemcarrito ic
+             INNER JOIN producto p ON ic.producto_id = p.id
+            LEFT JOIN imagenproducto ip ON p.id = ip.producto_id
+             WHERE ic.carrito_id = $1`,
+            [carrito_id]
+        );
+
+        res.status(200).json({
+            carrito_id,
+            items: items.rows,
+        });
+    } catch (err) {
+        console.error('Error al obtener el carrito:', err);
+        res.status(500).json({ error: 'Error al obtener el carrito' });
+    }
+});
+
+app.get('/api/carrito-anonimo', async (req, res) => {
+    try {
+        const { session_id } = req.query;
+
+        if (!session_id) {
+            return res.status(400).json({ error: 'session_id es requerido' });
+        }
+        
+        // Obtener el carrito anónimo
+        const carrito = await db.query('SELECT id FROM carrito WHERE session_id = $1', [session_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        // Obtener los productos del carrito anónimo
+        const items = await db.query(
+            `SELECT ic.id, ic.cantidad, p.nombre, p.precio, ip.url_imagen
+             FROM itemcarrito ic
+             INNER JOIN producto p ON ic.producto_id = p.id
+             LEFT JOIN imagenproducto ip ON p.id = ip.producto_id
+             WHERE ic.carrito_id = $1`,
+            [carrito_id]
+        );
+
+        res.status(200).json({
+            carrito_id,
+            items: items.rows,
+        });
+    } catch (err) {
+        console.error('Error al obtener el carrito anónimo:', err);
+        res.status(500).json({ error: 'Error al obtener el carrito anónimo' });
+    }
+});
+
 
 // localhost:3000/api/carrito/:id
 app.get('/api/item_carrito/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id, 10);
-        const resultado = await db.query('SELECT p.id,p.nombre,p.descripcion,p.precio,p.stock,p.categoria_id,p.creado_en,ip.url_imagen FROM producto p LEFT JOIN imagenproducto ip ON p.id = ip.producto_id WHERE carrito_id = $1', [id]);
+        const resultado = await db.query(`
+        Select * FROM itemcarrito WHERE carrito_id = $1
+        `, [id]);
 
         if (resultado.rows.length === 0) {
             return res.status(404).json({ error: 'Item no encontrado' });
@@ -99,15 +176,13 @@ app.get('/api/item_carrito/:id', async (req, res) => {
         console.error('Error al obtener item del carrito:', err);
         res.status(500).json({ error: 'Error al obtener item del carrito' });
     }
-
-
 });
 
 // localhost:3000/api/item_orden/:id
-app.get('/api/item_carrito/:id', async (req, res) => {
+app.get('/api/item_orden/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id, 10);
-        const resultado = await db.query('SELECT * FROM itemorden WHERE carrito_id = $1', [id]);
+        const resultado = await db.query('SELECT * FROM itemorden WHERE orden_id = $1', [id]);
 
         if (resultado.rows.length === 0) {
             return res.status(404).json({ error: 'Item no encontrado' });
@@ -359,6 +434,67 @@ app.post('/api/orden', async (req, res) => {
 });
 
 
+//===================PUT======================================
+app.put('/api/carrito', async (req, res) => {
+    try {
+        const { usuario_id, item_id, cantidad } = req.body;
+
+        if (!usuario_id || !item_id || cantidad === undefined) {
+            return res.status(400).json({ error: 'usuario_id, item_id y cantidad son requeridos' });
+        }
+
+        const carrito = await db.query('SELECT id FROM carrito WHERE usuario_id = $1', [usuario_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        const result = await db.query('UPDATE itemcarrito SET cantidad = $1 WHERE carrito_id = $2 AND id = $3 RETURNING *', [cantidad, carrito_id, item_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito' });
+        }
+
+        res.status(200).json({ mensaje: 'Cantidad actualizada en el carrito', item: result.rows[0] });
+    } catch (err) {
+        console.error('Error al actualizar la cantidad del producto en el carrito:', err);
+        res.status(500).json({ error: 'Error al actualizar la cantidad del producto en el carrito' });
+    }
+});
+
+app.put('/api/carrito-anonimo', async (req, res) => {
+    try {
+        const { session_id, item_id, cantidad } = req.body;
+
+        if (!session_id || !item_id || cantidad === undefined) {
+            return res.status(400).json({ error: 'session_id, item_id y cantidad son requeridos' });
+        }
+
+        // Obtener el carrito anónimo
+        const carrito = await db.query('SELECT id FROM carrito WHERE session_id = $1', [session_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        // Actualizar la cantidad del producto en el carrito anónimo
+        const result = await db.query('UPDATE itemcarrito SET cantidad = $1 WHERE carrito_id = $2 AND id = $3 RETURNING *', [cantidad, carrito_id, item_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito anónimo' });
+        }
+
+        res.status(200).json({ mensaje: 'Cantidad actualizada en el carrito anónimo', item: result.rows[0] });
+    } catch (err) {
+        console.error('Error al actualizar la cantidad del producto en el carrito anónimo:', err);
+        res.status(500).json({ error: 'Error al actualizar la cantidad del producto en el carrito anónimo' });
+    }
+});
+
 //===================DELETE======================================
 
 // DELETE localhost:3000/api/productos/:id
@@ -375,6 +511,70 @@ app.delete('/api/productos/:id', (req, res) => {
     }
 
 });
+
+app.delete('/api/carrito', async (req, res) => {
+    try {
+        const { usuario_id, item_id } = req.query;
+
+        if (!usuario_id || !item_id) {
+            return res.status(400).json({ error: 'usuario_id y item_id son requeridos' });
+        }
+
+        // Obtener el carrito del usuario
+        const carrito = await db.query('SELECT id FROM carrito WHERE usuario_id = $1', [usuario_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        // Eliminar el producto del carrito
+        const result = await db.query('DELETE FROM itemcarrito WHERE carrito_id = $1 AND id = $2 RETURNING *', [carrito_id, item_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito' });
+        }
+
+        res.status(200).json({ mensaje: 'Producto eliminado del carrito', item: result.rows[0] });
+    } catch (err) {
+        console.error('Error al eliminar producto del carrito:', err);
+        res.status(500).json({ error: 'Error al eliminar producto del carrito' });
+    }
+});
+
+app.delete('/api/carrito-anonimo', async (req, res) => {
+    try {
+        const { session_id, item_id } = req.query;
+
+        if (!session_id || !item_id) {
+            return res.status(400).json({ error: 'session_id y item_id son requeridos' });
+        }
+
+        // Obtener el carrito anónimo
+        const carrito = await db.query('SELECT id FROM carrito WHERE session_id = $1', [session_id]);
+
+        if (carrito.rows.length === 0) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        const carrito_id = carrito.rows[0].id;
+
+        // Eliminar el producto del carrito anónimo
+        const result = await db.query('DELETE FROM itemcarrito WHERE carrito_id = $1 AND id = $2 RETURNING *', [carrito_id, item_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito anónimo' });
+        }
+
+        res.status(200).json({ mensaje: 'Producto eliminado del carrito anónimo', item: result.rows[0] });
+    } catch (err) {
+        console.error('Error al eliminar producto del carrito anónimo:', err);
+        res.status(500).json({ error: 'Error al eliminar producto del carrito anónimo' });
+    }
+});
+
+
 
 
 // Iniciar servidor
