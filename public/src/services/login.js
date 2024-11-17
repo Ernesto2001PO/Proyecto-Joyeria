@@ -1,8 +1,8 @@
-// Capturar el login
 
 function login(correo, contrasena) {
-
     const msgErrorCorreo = document.getElementById('msg-error-email');
+
+
 
 
 
@@ -18,7 +18,15 @@ function login(correo, contrasena) {
         if (data.usuario) {
             localStorage.setItem('usuario_id', data.usuario.id);
             localStorage.setItem('usuario_nombre', data.usuario.nombre_usuario);
+            localStorage.setItem('usuario_rol', data.usuario.rol );
             console.log('Usuario autenticado:', data.usuario);
+
+            if (data.usuario.rol == "admin") {
+                window.location.href = './admin.html';
+            } else {
+                window.location.href = './joyeria.html';
+            }
+
         } else {
             console.error('Error al iniciar sesión:', data.error);
             msgErrorCorreo.innerHTML = "Credenciales no validos ";

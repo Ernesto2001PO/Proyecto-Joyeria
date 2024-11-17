@@ -285,6 +285,7 @@ app.post("/api/login", async (req, res) => {
         id: resultado.rows[0].id,
         nombre_usuario: resultado.rows[0].nombre_usuario,
         correo: resultado.rows[0].correo,
+        rol: resultado.rows[0].rol,
       },
     });
   } catch (err) {

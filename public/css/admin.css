@@ -1,0 +1,105 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.header-logo {
+    font-size: 24px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-right .user-profile {
+    margin-left: 20px;
+    font-size: 16px;
+    color: white;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 10px;
+}
+
+.sidebar-menu li a {
+    display: block;
+    padding: 10px;
+    background-color: #fff;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #eee;
+}
+
+.main-content-header {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
+}
+
+.main-content-header {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table {
+   width: 100%;
+   border: 1px solid #000;
+}
+th, td {
+   width: 25%;
+   text-align: left;
+   vertical-align: top;
+   border: 1px solid #000;
+   border-collapse: collapse;
+   padding: 0.3em;
+   caption-side: bottom;
+}
+caption {
+   padding: 0.3em;
+   color: #fff;
+    background: #000;
+}
+th {
+   background: #eee;
+}
