@@ -54,6 +54,8 @@ function cargarProductos(event) {
     const content = document.getElementById('content');
     content.innerHTML = `
         <div class="content-header">Productos</div>
+        <button onclick="mostrarFormularioProducto()">Crear Producto</button>
+
         <div class="content-body">
             <table>
                 <thead>
@@ -87,7 +89,6 @@ function cargarProductos(event) {
                         <td>${producto.precio}</td>
                         <td>${producto.stock}</td>
                         <td>
-                            <button onclick="agregarProducto()">Agregar</button>
                             <button onclick="editarProducto(${producto.id})">Editar</button>
                             <button onclick="eliminarProducto(${producto.id})">Eliminar</button>
 
@@ -102,9 +103,7 @@ function cargarProductos(event) {
         });
 }
 
-function agregarProducto() {
-    
-}
+
 
 function editarUsuario(id) {
     const nombre_usuario = prompt('Ingrese el nuevo nombre de usuario:');
@@ -147,39 +146,84 @@ function eliminarUsuario(id) {
 
 
 
-function agregarProducto() {
-    const nombre = prompt('Ingrese el nombre del producto:');
-    const descripcion = prompt('Ingrese la descripción:');
-    const precio = prompt('Ingrese el precio:');
-    const stock = prompt('Ingrese el stock:');
+function mostrarFormularioProducto() {
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="content-header">Agregar Producto</div>
+        <div class="content-body">
+            <form id="agregar-producto-form">
+                <label for="imagen">Imagen:</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*"><br>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required><br>
+                <label for="descripcion">Descripción:</label>
+                <input type="text" id="descripcion" name="descripcion" required><br>
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" name="precio" required><br>
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" name="stock" required><br>
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" name="categoria" required>
+                    <!-- Opciones de categorías -->
+                </select><br>
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    `;
 
-    if (nombre && descripcion && precio && stock) {
+    // Cargar las categorías en el select
+    fetch('http://localhost:3000/api/categorias')
+        .then(response => response.json())
+        .then(categorias => {
+            const categoriaSelect = document.getElementById('categoria');
+            categorias.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.id;
+                option.textContent = categoria.name;
+                categoriaSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar las categorías:', error);
+        });
+
+    document.getElementById('agregar-producto-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(event.target);
+        const imagen = formData.get('imagen');
+        const nombre = formData.get('nombre');
+        const descripcion = formData.get('descripcion');
+        const precio = formData.get('precio');
+        const stock = formData.get('stock');
+        const categoria_id = formData.get('categoria');
+
+        const productoData = {
+            imagen,
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            categoria_id
+        };
+
         fetch('http://localhost:3000/api/productos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ nombre, descripcion, precio, stock })
+            body: JSON.stringify(productoData)
         })
         .then(response => response.json())
         .then(data => {
             alert('Producto agregado exitosamente');
-            cargarProductos(); 
+            cargarProductos(); // Recargar la lista de productos
         })
         .catch(error => {
             console.error('Error al agregar el producto:', error);
         });
-    }
-
+    });
 }
-
-
-
-
-
-
-
-
 
 
 

@@ -114,6 +114,8 @@ nav ul li a {
 
 .mySlides img {
     width: 100%;
+    max-width: 100%;
+    max-height: 400px;
     border-radius: 10px;
 }
 
@@ -414,6 +416,14 @@ form {
         align-items: center;
         background-color: #fcfcfc;
     }
+    .mySlides img {
+        width: 100%;
+        max-width: 100%;
+        max-height: 500px;
+        border-radius: 10px;
+    }
+
+
 
     .logo h1 {
         font-size: 24px;
@@ -527,7 +537,13 @@ form {
     }
 
     .slideshow-container {
-        max-width: 90%;
+        max-width: 100%;
+    }
+    .mySlides img {
+        width: 100%;
+        max-width: 100%;
+        max-height: 500px;
+        border-radius: 10px;
     }
 
     .footer-contact {

@@ -1,15 +1,34 @@
 const express = require("express");
+const multer = require('multer');
+const path = require('path');
 const app = express();
+
 const db = require("./public/src/services/conectar");
+
+
+// Configuración de multer para almacenar archivos en la carpeta 'uploads'
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 
-app.use(cors()); // Permite solicitudes desde cualquier origen
-// Middlewares
-app.use(express.json());
+app.use(cors()); 
 
-// Middleware para permitir archivos estáticos
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+
 app.use(express.static("public"));
+
+
 
 //===========RUTAS===================
 // localhost:3000/api/productos
@@ -74,6 +93,21 @@ app.get("/api/categorias", async (req, res) => {
     res.status(500).json({ error: "Error al obtener categorías" });
   }
 });
+
+
+app.get("/api/lista-categorias", async (req, res) => {
+  try {
+    const resultado = await db.query(
+      "SELECT id, name, descripcion FROM categoria"
+    );
+    res.json(resultado.rows);
+  } catch (err) {
+    console.error("Error al obtener categorías:", err);
+    res.status(500).json({ error: "Error al obtener categorías" });
+  }
+});
+
+
 
 app.get("/api/carrito", async (req, res) => {
   try {
@@ -250,23 +284,34 @@ app.post("/api/usuarios/check", async (req, res) => {
   }
 });
 
-
-
-app.post("/api/productos", async (req, res) => {
+app.post('/api/productos', upload.single('imagen'), async (req, res) => {
   try {
-    const { nombre, descripcion, precio, stock, categoria_id } = req.body;
-    const resultado = await db.query(
-      "INSERT INTO producto (nombre,descripcion,precio,stock,categoria_id,creado_en) VALUES ($1,$2,$3,$4,$5,NOW()) RETURNING *",
-      [nombre, descripcion, precio, stock, categoria_id]
-    );
-    res
-      .status(201)
-      .json({ mensaje: "Producto creado", producto: resultado.rows[0] });
+      const { nombre, descripcion, precio, stock, categoria_id } = req.body;
+      const imagen = req.file ? req.file.filename : null;
+
+      const resultadoProducto = await db.query(
+          'INSERT INTO producto (nombre, descripcion, precio, stock, categoria_id, creado_en) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
+          [nombre, descripcion, precio, stock, categoria_id]
+      );
+
+      const productoId = resultadoProducto.rows[0].id;
+
+      if (imagen) {
+          await db.query(
+              'INSERT INTO imagenproducto (producto_id, url_imagen) VALUES ($1, $2)',
+              [productoId, imagen]
+          );
+      }
+
+      res.status(201).json({ mensaje: 'Producto creado', producto: resultadoProducto.rows[0] });
   } catch (err) {
-    console.error("Error al insertar en la base de datos:", err);
-    res.status(500).json({ error: "Error al insertar en la base de datos" });
+      console.error('Error al insertar en la base de datos:', err);
+      res.status(500).json({ error: 'Error al insertar en la base de datos' });
   }
 });
+
+
+
 
 app.post("/api/login", async (req, res) => {
   try {
