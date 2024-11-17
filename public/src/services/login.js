@@ -1,6 +1,11 @@
 // Capturar el login
 
 function login(correo, contrasena) {
+
+    const msgErrorCorreo = document.getElementById('msg-error-email');
+
+
+
     fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
@@ -16,6 +21,7 @@ function login(correo, contrasena) {
             console.log('Usuario autenticado:', data.usuario);
         } else {
             console.error('Error al iniciar sesión:', data.error);
+            msgErrorCorreo.innerHTML = "Credenciales no validos ";
         }
     })
     .catch(error => {

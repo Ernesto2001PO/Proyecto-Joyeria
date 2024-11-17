@@ -82,6 +82,12 @@ a {
     font-weight: bold;
 }
 
+#msg-error-nombre,  #msg-error-email,  #msg-error-contrasena {
+    color: red;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
 a:hover {
     text-decoration: underline;
 }

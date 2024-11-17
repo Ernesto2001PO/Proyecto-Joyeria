@@ -121,14 +121,29 @@ footer {
     background-color: #f1f1f1;
     padding: 20px;
     text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }
 
 .footer-contact {
-    margin-top: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-contact h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
 .footer-contact p {
+    font-size: 18px;
     margin: 5px 0;
+}
+
+.footer-contact img {
+    vertical-align: middle;
+    margin-right: 10px;
 }
 
 li {
@@ -354,6 +369,40 @@ form {
 }
 
 
+#carrito-vacio {
+    text-align: center;
+    margin-top: 50px;
+}
+
+#carrito-vacio img {
+    width: 150px;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#carrito-vacio h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#carrito-vacio p {
+    font-size: 18px;
+    color: #666;
+}
+
+#carrito-vacio a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#carrito-vacio a:hover {
+    text-decoration: underline;
+}
+
+
 
 
 
@@ -432,6 +481,39 @@ form {
         margin-top: 20px;
         font-size: 12px;
         font-weight: bold;
+    }
+
+    #carrito-vacio {
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    #carrito-vacio img {
+        width: 450px;
+        height: auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    #carrito-vacio h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    #carrito-vacio p {
+        font-size: 18px;
+        color: #666;
+    }
+    
+    #carrito-vacio a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    #carrito-vacio a:hover {
+        text-decoration: underline;
     }
 
     
