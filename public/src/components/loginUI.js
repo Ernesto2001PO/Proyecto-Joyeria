@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ).textContent = `Hola, ${nombreUsuario}`;
     document.getElementById("cerrar-sesion").style.display = "inline-block";
 
-    icono_usuario.href = "";
+    icono_usuario.href = "#";
     icono_usuario.onclick = (event) => {
       event.preventDefault();
       alert("Ya has iniciado sesión ID: " + nombreUsuario);

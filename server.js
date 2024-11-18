@@ -6,17 +6,9 @@ const app = express();
 const db = require("./public/src/services/conectar");
 
 
-// Configuración de multer para almacenar archivos en la carpeta 'uploads'
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname);
-  }
-});
 
-const upload = multer({ storage: storage });
+
+
 
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
@@ -284,7 +276,7 @@ app.post("/api/usuarios/check", async (req, res) => {
   }
 });
 
-app.post('/api/productos', upload.single('imagen'), async (req, res) => {
+app.post('/api/productos', async (req, res) => {
   try {
       const { nombre, descripcion, precio, stock, categoria_id } = req.body;
       const imagen = req.file ? req.file.filename : null;

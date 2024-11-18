@@ -36,8 +36,8 @@ function cargarUsuarios(event) {
                         <td>${usuario.nombre_usuario}</td>
                         <td>${usuario.correo}</td>
                         <td>
-                            <button onclick="editarUsuario(${usuario.id})">Editar</button>
-                            <button onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
+                            <button id="editar"    onclick="editarUsuario(${usuario.id})">Editar</button>
+                            <button  id="eliminar" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
                         </td>
                     </tr>
                 `;
@@ -89,8 +89,8 @@ function cargarProductos(event) {
                         <td>${producto.precio}</td>
                         <td>${producto.stock}</td>
                         <td>
-                            <button onclick="editarProducto(${producto.id})">Editar</button>
-                            <button onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                            <button     id="editar"onclick="editarProducto(${producto.id})">Editar</button>
+                            <button     id="eliminar" onclick="eliminarProducto(${producto.id})">Eliminar</button>
 
                         </td>
                     </tr>
@@ -143,8 +143,6 @@ function eliminarUsuario(id) {
         });
     }
 }
-
-
 
 function mostrarFormularioProducto() {
     const content = document.getElementById('content');
@@ -217,15 +215,13 @@ function mostrarFormularioProducto() {
         .then(response => response.json())
         .then(data => {
             alert('Producto agregado exitosamente');
-            cargarProductos(); // Recargar la lista de productos
+            cargarProductos(); 
         })
         .catch(error => {
             console.error('Error al agregar el producto:', error);
         });
     });
 }
-
-
 
 
 function editarProducto(id) {
