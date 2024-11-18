@@ -169,8 +169,7 @@ function mostrarFormularioProducto() {
         </div>
     `;
 
-    // Cargar las categorías en el select
-    fetch('http://localhost:3000/api/categorias')
+-    fetch('http://localhost:3000/api/categorias')
         .then(response => response.json())
         .then(categorias => {
             const categoriaSelect = document.getElementById('categoria');
@@ -225,28 +224,92 @@ function mostrarFormularioProducto() {
 
 
 function editarProducto(id) {
-    const nombre = prompt('Ingrese el nuevo nombre del producto:');
-    const descripcion = prompt('Ingrese la nueva descripción:');
-    const precio = prompt('Ingrese el nuevo precio:');
-    const stock = prompt('Ingrese el nuevo stock:');
-
-    if (nombre && descripcion && precio && stock) {
-        fetch(`http://localhost:3000/api/productos/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nombre, descripcion, precio, stock })
-        })
+    fetch(`http://localhost:3000/api/productos/${id}`)
         .then(response => response.json())
-        .then(data => {
-            alert('Producto actualizado exitosamente');
-            cargarProductos(); 
+        .then(producto => {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="content-header">Editar Producto</div>
+                <div class="content-body">
+                    <form id="editar-producto-form">
+                        <label for="imagen">Imagen:</label>
+                        <input type="file" id="imagen" name="imagen" accept="image/*"><br>
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" value="${producto.nombre}" required><br>
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" id="descripcion" name="descripcion" value="${producto.descripcion}" required><br>
+                        <label for="precio">Precio:</label>
+                        <input type="number" id="precio" name="precio" value="${producto.precio}" required><br>
+                        <label for="stock">Stock:</label>
+                        <input type="number" id="stock" name="stock" value="${producto.stock}" required><br>
+                        <label for="categoria">Categoría:</label>
+                        <select id="categoria" name="categoria" required>
+                            <!-- Opciones de categorías -->
+                        </select><br>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+            `;
+
+            // Cargar las categorías en el select
+            fetch('http://localhost:3000/api/categorias')
+                .then(response => response.json())
+                .then(categorias => {
+                    const categoriaSelect = document.getElementById('categoria');
+                    categorias.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria.id;
+                        option.textContent = categoria.name;
+                        if (categoria.id === producto.categoria_id) {
+                            option.selected = true;
+                        }
+                        categoriaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar las categorías:', error);
+                });
+
+            document.getElementById('editar-producto-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const formData = new FormData(event.target);
+                const nombre = formData.get('nombre');
+                const descripcion = formData.get('descripcion');
+                const precio = formData.get('precio');
+                const stock = formData.get('stock');
+                const categoria_id = formData.get('categoria');
+                const imagen = formData.get('imagen');
+
+                const productoData = {
+                    imagen,
+                    nombre,
+                    descripcion,
+                    precio,
+                    stock,
+                    categoria_id
+                };
+
+                fetch(`http://localhost:3000/api/productos/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productoData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Producto actualizado exitosamente');
+                    cargarProductos(); // Recargar la lista de productos
+                })
+                .catch(error => {
+                    console.error('Error al actualizar el producto:', error);
+                });
+            });
         })
         .catch(error => {
-            console.error('Error al actualizar el producto:', error);
+            console.error('Error al obtener el producto:', error);
         });
-    }
 }
 
 function eliminarProducto(id) {

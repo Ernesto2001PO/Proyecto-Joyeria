@@ -135,3 +135,12 @@ th {
     border-radius: 5px;
     
 }
+
+#cerrar-sesion {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #e0331c;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}

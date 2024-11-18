@@ -38,6 +38,23 @@ app.get("/api/productos", async (req, res) => {
   }
 });
 
+app.get('/api/productos/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const resultado = await db.query(
+          'SELECT p.id, p.nombre, p.descripcion, p.precio, p.stock, p.categoria_id, ip.url_imagen FROM producto p LEFT JOIN imagenproducto ip ON p.id = ip.producto_id WHERE p.id = $1',
+          [id]
+      );
+      if (resultado.rows.length === 0) {
+          return res.status(404).json({ error: 'Producto no encontrado' });
+      }
+      res.status(200).json(resultado.rows[0]);
+  } catch (err) {
+      console.error('Error al obtener el producto:', err);
+      res.status(500).json({ error: 'Error al obtener el producto' });
+  }
+});
+
 // localhost:3000/api/usuarios
 app.get("/api/usuarios", async (req, res) => {
   try {
@@ -205,6 +222,29 @@ app.get("/api/item_carrito/:id", async (req, res) => {
   }
 });
 
+
+// localhost:3000/api/ordenes/:usuario_id
+app.get('/api/ordenes/:usuario_id', async (req, res) => {
+  try {
+    const { usuario_id } = req.params;
+    const resultado = await db.query(
+      `SELECT o.id, o.total, o.estado, o.creado_en, io.producto_id, io.cantidad, io.precio, p.nombre
+       FROM orden o
+       JOIN itemorden io ON o.id = io.orden_id
+       JOIN producto p ON io.producto_id = p.id
+       WHERE o.usuario_id = $1`,
+      [usuario_id]
+    );
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ error: 'No se encontraron órdenes para este usuario' });
+    }
+    res.status(200).json(resultado.rows);
+  } catch (err) {
+    console.error('Error al obtener las órdenes:', err);
+    res.status(500).json({ error: 'Error al obtener las órdenes' });
+  }
+});
+
 // localhost:3000/api/item_orden/:id
 app.get("/api/item_orden/:id", async (req, res) => {
   try {
@@ -244,7 +284,7 @@ app.get("/api/productos/:id", async (req, res) => {
   }
 });
 
-//==========POST================
+//===================POST====================================
 // POST localhost:3000/api/usuarios
 app.post("/api/usuarios", async (req, res) => {
   try {
@@ -303,8 +343,6 @@ app.post('/api/productos', async (req, res) => {
 });
 
 
-
-
 app.post("/api/login", async (req, res) => {
   try {
     const { correo, contrasena } = req.body;
@@ -330,6 +368,7 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ error: "Error al hacer el login" });
   }
 });
+
 
 app.post("/api/carrito", async (req, res) => {
   try {
@@ -439,6 +478,7 @@ app.post("/api/carrito-anonimo", async (req, res) => {
       .json({ error: "Error al agregar producto al carrito anónimo" });
   }
 });
+
 
 // POST localhost:3000/api/orden
 app.post("/api/orden", async (req, res) => {
@@ -580,7 +620,6 @@ app.put("/api/carrito-anonimo", async (req, res) => {
 
     const carrito_id = carrito.rows[0].id;
 
-    // Actualizar la cantidad del producto en el carrito anónimo
     const result = await db.query(
       "UPDATE itemcarrito SET cantidad = $1 WHERE carrito_id = $2 AND id = $3 RETURNING *",
       [cantidad, carrito_id, item_id]
@@ -609,6 +648,32 @@ app.put("/api/carrito-anonimo", async (req, res) => {
         error:
           "Error al actualizar la cantidad del producto en el carrito anónimo",
       });
+  }
+});
+
+//http://localhost:3000/api/productos/${id}
+app.put('/api/productos/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { nombre, descripcion, precio, stock, categoria_id } = req.body;
+      const imagen = req.file ? req.file.filename : null;
+
+      const resultadoProducto = await db.query(
+          'UPDATE producto SET nombre = $1, descripcion = $2, precio = $3, stock = $4, categoria_id = $5 WHERE id = $6 RETURNING *',
+          [nombre, descripcion, precio, stock, categoria_id, id]
+      );
+
+      if (imagen) {
+          await db.query(
+              'UPDATE imagenproducto SET url_imagen = $1 WHERE producto_id = $2',
+              [imagen, id]
+          );
+      }
+
+    res.status(200).json({ mensaje: 'Producto actualizado', producto: resultadoProducto.rows[0] });
+  } catch (err) {
+      console.error('Error al actualizar el producto:', err);
+      res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 });
 

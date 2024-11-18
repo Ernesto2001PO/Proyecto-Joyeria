@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Ya has iniciado sesión ID: " + nombreUsuario);
     };
 
+
   } else {
     document.getElementById("nombre-usuario").textContent = "";
     document.getElementById("usuario-info").style.display = "none";

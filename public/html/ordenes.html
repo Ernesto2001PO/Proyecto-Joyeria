@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Mis Órdenes</title>
+</head>
+<header>
+    <div class="logo">
+        <img src="../img/imagenesheader/logo.jpg" alt="logoN" class="logo_J">
+    </div>
+    <nav>
+        <ul class="lista_menu_header">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="../html/joyeria.html">Joyería NATS</a></li>
+            <li><a href="../index.html #quienes_somos">Quiénes somos</a></li>
+            <li><a href="../html/items.html">Contáctanos</a></li>
+        </ul>
+    </nav>
+    <div id="usuario-info">
+        <span id="nombre-usuario"></span>
+        <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+    <button onclick="window.location.href='../html/ordenes.html'" style="display: none;">Mis Órdenes</button>
+
+    <div class="icons">
+        <span id="nombre-usuario"></span>
+        <a  id="icono-usuario" href="../html/login.html"><img src="../img/imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
+        <a href="#"><img src="../img/imagenesheader/carrito_de_compra.png" alt="Carrito de compras"></a>
+        <div class="respmenu">
+            <a href="#"><img src="../img/imagenesheader/tienda.png" alt="Tienda" class="Tienda"></a>
+        </div>
+    </div>
+</header>
+<body>
+    <div id="ordenes-container">
+    </div>
+    <script src="../src/components/orden.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            misOrdenes(); 
+        });
+    </script>
+</body>
+</html>

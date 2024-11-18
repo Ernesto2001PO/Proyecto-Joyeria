@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/carrito.css">
+    <link rel="stylesheet" href="../css/orden.css">
     <title>Carrito</title>
 </head>
 <body>
@@ -25,6 +26,8 @@
             <span id="nombre-usuario"></span>
             <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
+        <button onclick="window.location.href='../html/ordenes.html'">Mis Órdenes</button>
+
         <div class="icons">
             <span id="nombre-usuario"></span>
             <a  id="icono-usuario" href="../html/login.html"><img src="../img/imagenesheader/usuario_logo.png" alt="Icono de usuario"></a>
@@ -40,7 +43,6 @@
         <img src="../img/imagenesheader/image.png" alt="carrito_vacio" id="carrito_vacio">
         <h2>¡Tu carrito está vacío!</h2>
         <p>¿No sabes qué comprar? <a href="./joyeria.html" >¡Mira nuestras ofertas!</a></p>
-    
     </div>
 
 
@@ -51,15 +53,16 @@
         
 
     </div>
-
-
+    <button id="registrar-orden-btn">Registrar Orden</button>
 
     <script src="../src/components/carrito.js"></script>
     <script src="../src/components/loginUI.js"></script>
+    <script src="../src/components/orden.js"></script>
     
     
     
        
+
     
 
 </body>
