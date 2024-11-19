@@ -284,6 +284,26 @@ app.get("/api/productos/:id", async (req, res) => {
   }
 });
 
+app.get('/api/productos/categoria/:categoria_id', async (req, res) => {
+  try {
+    const { categoria_id } = req.params;
+    const resultado = await db.query(
+      `SELECT p.id, p.nombre, p.descripcion, p.precio, p.stock, ip.url_imagen
+       FROM producto p
+       LEFT JOIN imagenproducto ip ON p.id = ip.producto_id
+       WHERE p.categoria_id = $1`,
+      [categoria_id]
+    );
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ error: 'No se encontraron productos para esta categoría' });
+    }
+    res.status(200).json(resultado.rows);
+  } catch (err) {
+    console.error('Error al obtener los productos por categoría:', err);
+    res.status(500).json({ error: 'Error al obtener los productos por categoría' });
+  }
+});
+
 //===================POST====================================
 // POST localhost:3000/api/usuarios
 app.post("/api/usuarios", async (req, res) => {
@@ -316,6 +336,7 @@ app.post("/api/usuarios/check", async (req, res) => {
   }
 });
 
+// POST localhost:3000/api/categorias
 app.post('/api/productos', async (req, res) => {
   try {
       const { nombre, descripcion, precio, stock, categoria_id } = req.body;
@@ -342,7 +363,7 @@ app.post('/api/productos', async (req, res) => {
   }
 });
 
-
+// POST localhost:3000/api/login
 app.post("/api/login", async (req, res) => {
   try {
     const { correo, contrasena } = req.body;
@@ -369,7 +390,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
+// POST localhost:3000/api/carrito
 app.post("/api/carrito", async (req, res) => {
   try {
     const { usuario_id, producto_id, cantidad = 1 } = req.body;
@@ -420,6 +441,7 @@ app.post("/api/carrito", async (req, res) => {
   }
 });
 
+// POST localhost:3000/api/carrito-anonimo
 app.post("/api/carrito-anonimo", async (req, res) => {
   try {
     const { session_id, producto_id, cantidad } = req.body;
@@ -545,6 +567,41 @@ app.post("/api/orden", async (req, res) => {
     res.status(500).json({ error: "Error al registrar la orden" });
   }
 });
+
+// POST localhost:3000/api/transferir-carrito
+app.post('/api/transferir-carrito', async (req, res) => {
+  try {
+    const { session_id, usuario_id } = req.body;
+
+    if (!session_id || !usuario_id) {
+      return res.status(400).json({ error: 'session_id y usuario_id son requeridos' });
+    }
+
+    // Obtener el carrito anónimo
+    const carritoAnonimo = await db.query(
+      'SELECT id FROM carrito WHERE session_id = $1 AND usuario_id IS NULL',
+      [session_id]
+    );
+
+    if (carritoAnonimo.rows.length === 0) {
+      return res.status(404).json({ error: 'Carrito anónimo no encontrado' });
+    }
+
+    const carritoAnonimoId = carritoAnonimo.rows[0].id;
+
+    await db.query(
+      'UPDATE carrito SET usuario_id = $1, session_id = NULL WHERE id = $2',
+      [usuario_id, carritoAnonimoId]
+    );
+
+    res.status(200).json({ mensaje: 'Carrito transferido exitosamente' });
+  } catch (err) {
+    console.error('Error al transferir el carrito:', err);
+    res.status(500).json({ error: 'Error al transferir el carrito' });
+  }
+});
+
+
 
 //===================PUT======================================
 app.put("/api/carrito", async (req, res) => {

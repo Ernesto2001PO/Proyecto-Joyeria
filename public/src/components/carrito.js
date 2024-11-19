@@ -14,8 +14,11 @@ if (!session_id) {
 document.addEventListener("DOMContentLoaded", () => {
   if (window.location.pathname.includes("carrito.html")) {
     cargarCarrito();
+   
+  
   }
 });
+
 
 function cargarCarrito() {
   const carritoContainer = document.getElementById("carrito-container");
@@ -45,10 +48,10 @@ function cargarCarrito() {
       .then((carrito) => {
         console.log("Carrito cargado:", carrito);
         renderizarCarrito(carrito);
+       
       })
       .catch((error) => {
         console.error("Error al cargar el carrito:", error);
-        carritoContainer.innerHTML = "<p>Error al cargar el carrito.</p>";
       });
   } else {
     carritoContainer.innerHTML = "<p>No se encontró un carrito asociado.</p>";
@@ -68,6 +71,9 @@ function renderizarCarrito(carrito) {
 
   if (carrito.items && carrito.items.length > 0) {
     carritoVacio.style.display = "none"; 
+    document.getElementById('registrar-orden-btn').style.display = 'block';
+
+    let total = 0;
 
     carrito.items.forEach((item) => {
       console.log("Renderizando item:", item);
@@ -83,14 +89,22 @@ function renderizarCarrito(carrito) {
                 <h3>${item.nombre}</h3>
                 <p>Precio: ${item.precio} Bs</p>
                 <p>Cantidad: <span class="cantidad">${item.cantidad}</span></p>
+                <p>Subtotal: ${item.precio*item.cantidad} Bs</p>
                 <button class="btn-disminuir" data-item-id="${item.id}"> - </button>
                 <button class="btn-aumentar" data-item-id="${item.id}"> + </button>
-                <button onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
+                <button class="btn-eliminar"  onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
             </div>
         `;
       carritoContainer.innerHTML += itemHTML;
+      total += item.precio * item.cantidad;
     });
 
+    const totalHTML = `
+        <h2>Total: ${total} Bs</h2>`;
+        
+    carritoContainer.innerHTML += totalHTML;
+
+   
     document.querySelectorAll(".btn-disminuir").forEach((button) => {
       button.addEventListener("click", () => {
         const itemId = button.getAttribute("data-item-id");

@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    misOrdenes(); 
+});
+
 document.getElementById('registrar-orden-btn').addEventListener('click', () => {
     const usuario_id = localStorage.getItem('usuario_id');
     if (usuario_id) {
@@ -20,11 +24,15 @@ function registrarOrden(usuario_id) {
         if (data.error) {
             alert('Error al registrar la orden: ' + data.error);
         } else {
+            if (!confirm('¿Está seguro de que quiere registrar esta orden?')) {
+                return;
+            }
             alert('Orden registrada exitosamente');
             const carritoContainer = document.getElementById('carrito-container');
             const carritoVacio = document.getElementById('carrito-vacio');
             carritoContainer.innerHTML = '';
             carritoVacio.style.display = 'block';
+
         
         }
     })

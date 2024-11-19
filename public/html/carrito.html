@@ -26,7 +26,7 @@
             <span id="nombre-usuario"></span>
             <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
-        <button onclick="window.location.href='../html/ordenes.html'">Mis Órdenes</button>
+        <button  class="btn-misOrdenes"           onclick="window.location.href='../html/ordenes.html'">Mis Órdenes</button>
 
         <div class="icons">
             <span id="nombre-usuario"></span>
@@ -37,7 +37,7 @@
             </div>
         </div>
     </header>
-    <h1>CARRITO </h1>
+    <h1 class="carrito">CARRITO </h1>
 
     <div id="carrito-vacio">
         <img src="../img/imagenesheader/image.png" alt="carrito_vacio" id="carrito_vacio">
@@ -53,11 +53,12 @@
         
 
     </div>
-    <button id="registrar-orden-btn">Registrar Orden</button>
+    <button id="registrar-orden-btn" style="display: none;">Registrar Orden</button>
 
     <script src="../src/components/carrito.js"></script>
     <script src="../src/components/loginUI.js"></script>
     <script src="../src/components/orden.js"></script>
+    <script src="../src/services/login.js"></script>
     
     
     

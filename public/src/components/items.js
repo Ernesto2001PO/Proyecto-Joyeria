@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h2>Precio: ${producto.precio} Bs</h2>
                                 <p>Descripción: ${producto.descripcion}</p>
                                 <form id="form-agregar-carrito">
-                                    <label for="cantidad">Cantidad:</label>
+                                    <label  for="cantidad">Cantidad:</label>
                                     <input type="number" id="cantidad" name="cantidad" min="1" value="1">
-                                    <button type="submit">Agregar al carrito</button>
+                                    <button    class="agregar-carrito"    type="submit">Agregar al carrito</button>
                                 </form>
                             </div>
                         </div>
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         event.preventDefault();
                         const cantidad = parseInt(document.getElementById('cantidad').value);
                         agregaralCarrito(productoId, cantidad);  
+                        alert('Producto agregado al carrito');
                     };
                 })
                 .catch(error => {

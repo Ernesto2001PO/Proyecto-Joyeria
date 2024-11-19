@@ -1,3 +1,15 @@
+.carrito {
+    display: flex;
+    flex-direction: column;
+    padding: 30px
+}
+#usuario-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: auto;
+}
+
 .carrito-container {
     display: flex;
     flex-direction: column;
@@ -6,9 +18,11 @@
 .carrito-item {
     display: flex;
     align-items: center;
+    flex-direction: column;
     gap: 20px;
     border: 1px solid #ccc;
     padding: 10px;
+    
 }
 .carrito-item img {
     width: 100px;
@@ -16,4 +30,131 @@
 }
 .carrito-item button {
     margin-left: auto;
+}
+
+.btn-disminuir{ 
+    display: block;
+    margin: 0 auto;
+    background-color: #f00;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    width: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+.btn-aumentar{
+    display: block;
+    margin: 0 auto;
+    background-color: rgb(59, 196, 59);
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    width: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-eliminar{
+    display: block;
+    margin: 0 auto;
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-misOrdenes{
+    display: flex;
+    background-color: rgb(59, 196, 59);
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#registrar-orden-btn{
+    background-color: rgb(59, 196, 59);
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+@media (min-width: 768px) {
+    .carrito {
+        display: flex;
+        flex-direction: column;
+        padding: 30px
+    }
+    .carrito-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .carrito-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-direction: row;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+    .carrito-item img {
+        width: 100px;
+        height: 100px;
+    }
+    .carrito-item button {
+        margin-left: auto;
+    }
+    #registrar-orden-btn{
+        background-color: rgb(59, 196, 59);
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+}
+
+
+
+
+@media (min-width: 1024px) {
+    .carrito {
+        display: flex;
+        flex-direction: column;
+        padding: 30px
+    }
+    .carrito-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .carrito-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-direction: row;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+    .carrito-item img {
+        width: 100px;
+        height: 100px;
+    }
+    .carrito-item button {
+        margin-left: auto;
+    }
+
+
 }
