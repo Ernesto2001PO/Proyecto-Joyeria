@@ -1,23 +1,35 @@
 const express = require("express");
 const multer = require('multer');
 const path = require('path');
+const cors = require("cors");
 const app = express();
-
 const db = require("./public/src/services/conectar");
 
 
+const uploadDirectory = path.resolve(process.env.UPLOADS_PATH || 'uploads');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDirectory);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
+
+app.use('/uploads', express.static(uploadDirectory));
 
 
 
 
 const PORT = process.env.PORT || 3000;
-const cors = require("cors");
 
 app.use(cors()); 
 
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
-
 app.use(express.static("public"));
 
 
@@ -337,10 +349,10 @@ app.post("/api/usuarios/check", async (req, res) => {
 });
 
 // POST localhost:3000/api/categorias
-app.post('/api/productos', async (req, res) => {
+app.post('/api/productos', upload.single('imagen'), async (req, res) => {
   try {
       const { nombre, descripcion, precio, stock, categoria_id } = req.body;
-      const imagen = req.file ? req.file.filename : null;
+      const imagen = req.file ? `uploads/${req.file.filename}` : null;
 
       const resultadoProducto = await db.query(
           'INSERT INTO producto (nombre, descripcion, precio, stock, categoria_id, creado_en) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
@@ -362,6 +374,7 @@ app.post('/api/productos', async (req, res) => {
       res.status(500).json({ error: 'Error al insertar en la base de datos' });
   }
 });
+
 
 // POST localhost:3000/api/login
 app.post("/api/login", async (req, res) => {

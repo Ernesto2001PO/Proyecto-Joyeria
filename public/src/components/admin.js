@@ -1,13 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('usuarios-link').addEventListener('click', cargarUsuarios);
-    document.getElementById('productos-link').addEventListener('click', cargarProductos);
-    cargarUsuarios(); 
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("usuarios-link")
+    .addEventListener("click", cargarUsuarios);
+  document
+    .getElementById("productos-link")
+    .addEventListener("click", cargarProductos);
+  cargarUsuarios();
 });
 
 function cargarUsuarios(event) {
-    if (event) event.preventDefault();
-    const content = document.getElementById('content');
-    content.innerHTML = `
+  if (event) event.preventDefault();
+  const content = document.getElementById("content");
+  content.innerHTML = `
         <div class="content-header">Usuarios</div>
         <div class="content-body">
             <table>
@@ -24,14 +28,14 @@ function cargarUsuarios(event) {
         </div>
     `;
 
-    fetch('http://localhost:3000/api/usuarios')
-        .then(response => response.json())
-        .then(usuarios => {
-            const usuariosTable = document.getElementById('usuarios-table');
-            usuariosTable.innerHTML = '';
+  fetch("http://localhost:3000/api/usuarios")
+    .then((response) => response.json())
+    .then((usuarios) => {
+      const usuariosTable = document.getElementById("usuarios-table");
+      usuariosTable.innerHTML = "";
 
-            usuarios.forEach(usuario => {
-                const row = `
+      usuarios.forEach((usuario) => {
+        const row = `
                     <tr>
                         <td>${usuario.nombre_usuario}</td>
                         <td>${usuario.correo}</td>
@@ -41,18 +45,18 @@ function cargarUsuarios(event) {
                         </td>
                     </tr>
                 `;
-                usuariosTable.innerHTML += row;
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar los usuarios:', error);
-        });
+        usuariosTable.innerHTML += row;
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar los usuarios:", error);
+    });
 }
 
 function cargarProductos(event) {
-    if (event) event.preventDefault();
-    const content = document.getElementById('content');
-    content.innerHTML = `
+  if (event) event.preventDefault();
+  const content = document.getElementById("content");
+  content.innerHTML = `
         <div class="content-header">Productos</div>
         <button onclick="mostrarFormularioProducto()">Crear Producto</button>
 
@@ -74,16 +78,22 @@ function cargarProductos(event) {
         </div>
     `;
 
-    fetch('http://localhost:3000/api/productos')
-        .then(response => response.json())
-        .then(productos => {
-            const productosTable = document.getElementById('productos-table');
-            productosTable.innerHTML = ''; 
 
-            productos.forEach(producto => {
-                const row = `
+
+
+  fetch("http://localhost:3000/api/productos")
+    .then((response) => response.json())
+    .then((productos) => {
+      const productosTable = document.getElementById("productos-table");
+      productosTable.innerHTML = "";
+
+
+      productos.forEach((producto) => {
+        const urlImagen = `http://localhost:3000/${producto.url_imagen}`.replace(/([^:]\/)\/+/g, "$1");
+
+        const row = `
                     <tr>
-                        <td><img src="/${producto.url_imagen}" alt="${producto.nombre}" style="width: 100px; height: auto;"></td>
+                        <td><img src="${urlImagen}" alt="${producto.nombre}" style="width: 100px; height: auto;"></td>
                         <td>${producto.nombre}</td>
                         <td>${producto.descripcion}</td>
                         <td>${producto.precio}</td>
@@ -95,58 +105,56 @@ function cargarProductos(event) {
                         </td>
                     </tr>
                 `;
-                productosTable.innerHTML += row;
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar los productos:', error);
-        });
+        productosTable.innerHTML += row;
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar los productos:", error);
+    });
 }
 
-
-
 function editarUsuario(id) {
-    const nombre_usuario = prompt('Ingrese el nuevo nombre de usuario:');
-    const correo = prompt('Ingrese el nuevo correo:');
+  const nombre_usuario = prompt("Ingrese el nuevo nombre de usuario:");
+  const correo = prompt("Ingrese el nuevo correo:");
 
-    if (nombre_usuario && correo) {
-        fetch(`http://localhost:3000/api/usuarios/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nombre_usuario, correo })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Usuario actualizado exitosamente');
-            cargarUsuarios(); 
-        })
-        .catch(error => {
-            console.error('Error al actualizar el usuario:', error);
-        });
-    }
+  if (nombre_usuario && correo) {
+    fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre_usuario, correo }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert("Usuario actualizado exitosamente");
+        cargarUsuarios();
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el usuario:", error);
+      });
+  }
 }
 
 function eliminarUsuario(id) {
-    if (confirm('¿Está seguro de que desea eliminar este usuario?')) {
-        fetch(`http://localhost:3000/api/usuarios/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Usuario eliminado exitosamente');
-            cargarUsuarios(); 
-        })
-        .catch(error => {
-            console.error('Error al eliminar el usuario:', error);
-        });
-    }
+  if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+    fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert("Usuario eliminado exitosamente");
+        cargarUsuarios();
+      })
+      .catch((error) => {
+        console.error("Error al eliminar el usuario:", error);
+      });
+  }
 }
 
 function mostrarFormularioProducto() {
-    const content = document.getElementById('content');
-    content.innerHTML = `
+  const content = document.getElementById("content");
+  content.innerHTML = `
         <div class="content-header">Agregar Producto</div>
         <div class="content-body">
             <form id="agregar-producto-form">
@@ -169,66 +177,64 @@ function mostrarFormularioProducto() {
         </div>
     `;
 
--    fetch('http://localhost:3000/api/categorias')
-        .then(response => response.json())
-        .then(categorias => {
-            const categoriaSelect = document.getElementById('categoria');
-            categorias.forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria.id;
-                option.textContent = categoria.name;
-                categoriaSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar las categorías:', error);
-        });
+  -fetch("http://localhost:3000/api/categorias")
+    .then((response) => response.json())
+    .then((categorias) => {
+      const categoriaSelect = document.getElementById("categoria");
+      categorias.forEach((categoria) => {
+        const option = document.createElement("option");
+        option.value = categoria.id;
+        option.textContent = categoria.name;
+        categoriaSelect.appendChild(option);
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar las categorías:", error);
+    });
 
-    document.getElementById('agregar-producto-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const formData = new FormData(event.target);
-        const imagen = formData.get('imagen');
-        const nombre = formData.get('nombre');
-        const descripcion = formData.get('descripcion');
-        const precio = formData.get('precio');
-        const stock = formData.get('stock');
-        const categoria_id = formData.get('categoria');
+  document
+    .getElementById("agregar-producto-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
 
-        const productoData = {
-            imagen,
-            nombre,
-            descripcion,
-            precio,
-            stock,
-            categoria_id
-        };
+      const formData = new FormData(event.target);
+      const imagen = formData.get("imagen");
+      const nombre = formData.get("nombre");
+      const descripcion = formData.get("descripcion");
+      const precio = formData.get("precio");
+      const stock = formData.get("stock");
+      const categoria_id = formData.get("categoria");
 
-        fetch('http://localhost:3000/api/productos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(productoData)
+      const productoData = {
+        imagen,
+        nombre,
+        descripcion,
+        precio,
+        stock,
+        categoria_id,
+      };
+
+      fetch("http://localhost:3000/api/productos", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Producto agregado exitosamente");
+          cargarProductos();
         })
-        .then(response => response.json())
-        .then(data => {
-            alert('Producto agregado exitosamente');
-            cargarProductos(); 
-        })
-        .catch(error => {
-            console.error('Error al agregar el producto:', error);
+        .catch((error) => {
+          console.error("Error al agregar el producto:", error);
         });
     });
 }
 
-
 function editarProducto(id) {
-    fetch(`http://localhost:3000/api/productos/${id}`)
-        .then(response => response.json())
-        .then(producto => {
-            const content = document.getElementById('content');
-            content.innerHTML = `
+  fetch(`http://localhost:3000/api/productos/${id}`)
+    .then((response) => response.json())
+    .then((producto) => {
+      const content = document.getElementById("content");
+      content.innerHTML = `
                 <div class="content-header">Editar Producto</div>
                 <div class="content-body">
                     <form id="editar-producto-form">
@@ -251,79 +257,81 @@ function editarProducto(id) {
                 </div>
             `;
 
-            // Cargar las categorías en el select
-            fetch('http://localhost:3000/api/categorias')
-                .then(response => response.json())
-                .then(categorias => {
-                    const categoriaSelect = document.getElementById('categoria');
-                    categorias.forEach(categoria => {
-                        const option = document.createElement('option');
-                        option.value = categoria.id;
-                        option.textContent = categoria.name;
-                        if (categoria.id === producto.categoria_id) {
-                            option.selected = true;
-                        }
-                        categoriaSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al cargar las categorías:', error);
-                });
-
-            document.getElementById('editar-producto-form').addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                const formData = new FormData(event.target);
-                const nombre = formData.get('nombre');
-                const descripcion = formData.get('descripcion');
-                const precio = formData.get('precio');
-                const stock = formData.get('stock');
-                const categoria_id = formData.get('categoria');
-                const imagen = formData.get('imagen');
-
-                const productoData = {
-                    imagen,
-                    nombre,
-                    descripcion,
-                    precio,
-                    stock,
-                    categoria_id
-                };
-
-                fetch(`http://localhost:3000/api/productos/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(productoData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert('Producto actualizado exitosamente');
-                    cargarProductos(); // Recargar la lista de productos
-                })
-                .catch(error => {
-                    console.error('Error al actualizar el producto:', error);
-                });
-            });
+      // Cargar las categorías en el select
+      fetch("http://localhost:3000/api/categorias")
+        .then((response) => response.json())
+        .then((categorias) => {
+          const categoriaSelect = document.getElementById("categoria");
+          categorias.forEach((categoria) => {
+            const option = document.createElement("option");
+            option.value = categoria.id;
+            option.textContent = categoria.name;
+            if (categoria.id === producto.categoria_id) {
+              option.selected = true;
+            }
+            categoriaSelect.appendChild(option);
+          });
         })
-        .catch(error => {
-            console.error('Error al obtener el producto:', error);
+        .catch((error) => {
+          console.error("Error al cargar las categorías:", error);
         });
+
+      document
+        .getElementById("editar-producto-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const formData = new FormData(event.target);
+          const nombre = formData.get("nombre");
+          const descripcion = formData.get("descripcion");
+          const precio = formData.get("precio");
+          const stock = formData.get("stock");
+          const categoria_id = formData.get("categoria");
+          const imagen = formData.get("imagen");
+
+          const productoData = {
+            imagen,
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            categoria_id,
+          };
+
+          fetch(`http://localhost:3000/api/productos/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(productoData),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Producto actualizado exitosamente");
+              cargarProductos(); // Recargar la lista de productos
+            })
+            .catch((error) => {
+              console.error("Error al actualizar el producto:", error);
+            });
+        });
+    })
+    .catch((error) => {
+      console.error("Error al obtener el producto:", error);
+    });
 }
 
 function eliminarProducto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este producto?')) {
-        fetch(`http://localhost:3000/api/productos/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Producto eliminado exitosamente');
-            cargarProductos(); 
-        })
-        .catch(error => {
-            console.error('Error al eliminar el producto:', error);
-        });
-    }
+  if (confirm("¿Está seguro de que desea eliminar este producto?")) {
+    fetch(`http://localhost:3000/api/productos/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert("Producto eliminado exitosamente");
+        cargarProductos();
+      })
+      .catch((error) => {
+        console.error("Error al eliminar el producto:", error);
+      });
+  }
 }
