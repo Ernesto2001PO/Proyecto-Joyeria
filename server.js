@@ -115,21 +115,7 @@ app.get("/api/categorias", async (req, res) => {
   }
 });
 
-
-app.get("/api/lista-categorias", async (req, res) => {
-  try {
-    const resultado = await db.query(
-      "SELECT id, name, descripcion FROM categoria"
-    );
-    res.json(resultado.rows);
-  } catch (err) {
-    console.error("Error al obtener categorías:", err);
-    res.status(500).json({ error: "Error al obtener categorías" });
-  }
-});
-
-
-
+// localhost:3000/api/carrito
 app.get("/api/carrito", async (req, res) => {
   try {
     const { usuario_id } = req.query;
@@ -172,6 +158,7 @@ app.get("/api/carrito", async (req, res) => {
   }
 });
 
+// localhost:3000/api/carrito-anonimo
 app.get("/api/carrito-anonimo", async (req, res) => {
   try {
     const { session_id } = req.query;
@@ -180,7 +167,6 @@ app.get("/api/carrito-anonimo", async (req, res) => {
       return res.status(400).json({ error: "session_id es requerido" });
     }
 
-    // Obtener el carrito anónimo
     const carrito = await db.query(
       "SELECT id FROM carrito WHERE session_id = $1",
       [session_id]
@@ -192,7 +178,6 @@ app.get("/api/carrito-anonimo", async (req, res) => {
 
     const carrito_id = carrito.rows[0].id;
 
-    // Obtener los productos del carrito anónimo
     const items = await db.query(
       `SELECT ic.id, ic.cantidad, p.nombre, p.precio, ip.url_imagen
              FROM itemcarrito ic
@@ -277,6 +262,7 @@ app.get("/api/item_orden/:id", async (req, res) => {
   }
 });
 
+// localhost:3000/api/orden/:id
 app.get("/api/productos/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -296,6 +282,7 @@ app.get("/api/productos/:id", async (req, res) => {
   }
 });
 
+// localhost:3000/api/productos/categoria/:categoria_id
 app.get('/api/productos/categoria/:categoria_id', async (req, res) => {
   try {
     const { categoria_id } = req.params;
@@ -334,6 +321,7 @@ app.post("/api/usuarios", async (req, res) => {
   }
 });
 
+// POST localhost:3000/api/usuarios/check
 app.post("/api/usuarios/check", async (req, res) => {
   try {
     const { nombre_usuario, correo } = req.body;
@@ -348,7 +336,7 @@ app.post("/api/usuarios/check", async (req, res) => {
   }
 });
 
-// POST localhost:3000/api/categorias
+// POST localhost:3000/api/productos
 app.post('/api/productos', upload.single('imagen'), async (req, res) => {
   try {
       const { nombre, descripcion, precio, stock, categoria_id } = req.body;

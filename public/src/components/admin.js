@@ -77,10 +77,6 @@ function cargarProductos(event) {
             </table>
         </div>
     `;
-
-
-
-
   fetch("http://localhost:3000/api/productos")
     .then((response) => response.json())
     .then((productos) => {
@@ -191,7 +187,7 @@ function editarProducto(id) {
                         <label for="descripcion">Descripción:</label>
                         <input type="text" id="descripcion" name="descripcion" value="${producto.descripcion}" required><br>
                         <label for="precio">Precio:</label>
-                        <input type="number" id="precio" name="precio" value="${producto.precio}" required><br>
+                        <input type="number" id="precio" name="precio" value="${producto.precio}" step="0.01" required><br>
                         <label for="stock">Stock:</label>
                         <input type="number" id="stock" name="stock" value="${producto.stock}" required><br>
                         <label for="categoria">Categoría:</label>
@@ -229,7 +225,7 @@ function editarProducto(id) {
           const formData = new FormData(event.target);
           const nombre = formData.get("nombre");
           const descripcion = formData.get("descripcion");
-          const precio = formData.get("precio");
+          const precio = parseFloat(formData.get("precio"));
           const stock = formData.get("stock");
           const categoria_id = formData.get("categoria");
           const imagen = formData.get("imagen");
