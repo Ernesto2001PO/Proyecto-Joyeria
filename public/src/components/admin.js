@@ -113,45 +113,6 @@ function cargarProductos(event) {
     });
 }
 
-function editarUsuario(id) {
-  const nombre_usuario = prompt("Ingrese el nuevo nombre de usuario:");
-  const correo = prompt("Ingrese el nuevo correo:");
-
-  if (nombre_usuario && correo) {
-    fetch(`http://localhost:3000/api/usuarios/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nombre_usuario, correo }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert("Usuario actualizado exitosamente");
-        cargarUsuarios();
-      })
-      .catch((error) => {
-        console.error("Error al actualizar el usuario:", error);
-      });
-  }
-}
-
-function eliminarUsuario(id) {
-  if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
-    fetch(`http://localhost:3000/api/usuarios/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert("Usuario eliminado exitosamente");
-        cargarUsuarios();
-      })
-      .catch((error) => {
-        console.error("Error al eliminar el usuario:", error);
-      });
-  }
-}
-
 function mostrarFormularioProducto() {
   const content = document.getElementById("content");
   content.innerHTML = `
@@ -198,21 +159,6 @@ function mostrarFormularioProducto() {
       event.preventDefault();
 
       const formData = new FormData(event.target);
-      const imagen = formData.get("imagen");
-      const nombre = formData.get("nombre");
-      const descripcion = formData.get("descripcion");
-      const precio = formData.get("precio");
-      const stock = formData.get("stock");
-      const categoria_id = formData.get("categoria");
-
-      const productoData = {
-        imagen,
-        nombre,
-        descripcion,
-        precio,
-        stock,
-        categoria_id,
-      };
 
       fetch("http://localhost:3000/api/productos", {
         method: "POST",
@@ -235,7 +181,7 @@ function editarProducto(id) {
     .then((producto) => {
       const content = document.getElementById("content");
       content.innerHTML = `
-                <div class="content-header">Editar Producto</div>
+                <div class="content-header"><h2>Editar Producto</h2></div>
                 <div class="content-body">
                     <form id="editar-producto-form">
                         <label for="imagen">Imagen:</label>
@@ -257,7 +203,6 @@ function editarProducto(id) {
                 </div>
             `;
 
-      // Cargar las categorías en el select
       fetch("http://localhost:3000/api/categorias")
         .then((response) => response.json())
         .then((categorias) => {
@@ -308,7 +253,7 @@ function editarProducto(id) {
             .then((response) => response.json())
             .then((data) => {
               alert("Producto actualizado exitosamente");
-              cargarProductos(); // Recargar la lista de productos
+              cargarProductos(); 
             })
             .catch((error) => {
               console.error("Error al actualizar el producto:", error);

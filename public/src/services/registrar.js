@@ -47,7 +47,6 @@ document
       return;
     }
 
-    // Verificar si el nombre de usuario o el correo ya están registrados
     const responseCheck = await fetch(
       "http://localhost:3000/api/usuarios/check",
       {
