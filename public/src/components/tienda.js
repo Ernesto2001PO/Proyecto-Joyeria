@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   cargarProductos();
-  cargarCategorias();
+  cargarCategoria();
 });
 
 function cargarProductos() {

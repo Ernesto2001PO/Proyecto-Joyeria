@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("productos-link")
     .addEventListener("click", cargarProductos);
   cargarUsuarios();
-  document 
+  document
     .getElementById("categorias-link")
     .addEventListener("click", cargarCategoria);
 
@@ -83,34 +83,34 @@ function mostrarFormularioUsuario() {
         </div>
     `;
 
-  document.getElementById("agregar-usuario-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
+  document
+    .getElementById("agregar-usuario-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
 
-    const usuarioData = {
-      nombre_usuario: formData.get("nombre"),
-      correo: formData.get("correo"),
-      contrasena: formData.get("contrasena")
-    };
+      const usuarioData = {
+        nombre_usuario: formData.get("nombre"),
+        correo: formData.get("correo"),
+        contrasena: formData.get("contrasena"),
+      };
 
-    fetch("http://localhost:3000/api/usuarios", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(usuarioData)
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      alert("Usuario agregado exitosamente");
-      cargarUsuarios();
-    })
-    .catch((error) => {
-      console.error("Error al agregar el usuario:", error);
+      fetch("http://localhost:3000/api/usuarios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usuarioData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Usuario agregado exitosamente");
+          cargarUsuarios();
+        })
+        .catch((error) => {
+          console.error("Error al agregar el usuario:", error);
+        });
     });
-  }
-  );
-
 }
 
 function editarUsuario(id) {
@@ -135,7 +135,9 @@ function editarUsuario(id) {
         </div>
       `;
 
-      document.getElementById("editar-usuario-form").addEventListener("submit", function (event) {
+      document
+        .getElementById("editar-usuario-form")
+        .addEventListener("submit", function (event) {
           event.preventDefault();
 
           const formData = new FormData(event.target);
@@ -189,10 +191,8 @@ function eliminarUsuario(id) {
   }
 }
 
-
-
 //==========================================================
-function cargarCategoria(event){
+function cargarCategoria(event) {
   if (event) event.preventDefault();
   const content = document.getElementById("content");
   content.innerHTML = `
@@ -211,7 +211,7 @@ function cargarCategoria(event){
                 </tbody>
             </table>
         </div>
-  `
+  `;
   fetch("http://localhost:3000/api/categorias")
     .then((response) => response.json())
     .then((categorias) => {
@@ -230,7 +230,6 @@ function cargarCategoria(event){
                 `;
         categoriasTable.innerHTML += row;
       });
-      
     })
     .catch((error) => {
       console.error("Error al cargar las categorias:", error);
@@ -252,36 +251,38 @@ function mostrarFormularioCategoria() {
         </div>
     `;
 
-  document.getElementById("agregar-categoria-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
+  document
+    .getElementById("agregar-categoria-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
 
-    const categoriaData = {
-      name: formData.get("nombre"),
-      descripcion: formData.get("descripcion")
-    };
+      const categoriaData = {
+        name: formData.get("nombre"),
+        descripcion: formData.get("descripcion"),
+      };
 
-    fetch("http://localhost:3000/api/categorias", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(categoriaData)
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      alert("Categoria agregada exitosamente");
-      cargarCategorias(); 
-    })
-    .catch((error) => {
-      console.error("Error al agregar la categoria:", error);
+      fetch("http://localhost:3000/api/categorias", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoriaData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Categoria agregada exitosamente");
+          cargarCategorias();
+        })
+        .catch((error) => {
+          console.error("Error al agregar la categoria:", error);
+        });
     });
-  });
 }
 
 function editarCategoria(id) {
   fetch(`http://localhost:3000/api/categorias/${id}`)
-  .then((response) => response.json())
+    .then((response) => response.json())
     .then((categoria) => {
       const content = document.getElementById("content");
       content.innerHTML = `
@@ -326,10 +327,9 @@ function editarCategoria(id) {
             })
             .catch((error) => {
               console.error("Error al actualizar la categoria:", error);
-      });
+            });
+        });
     });
-  })
-
 }
 
 function eliminarCategoria(id) {
@@ -347,7 +347,7 @@ function eliminarCategoria(id) {
       });
   }
 }
-  
+
 //==========================================================
 function cargarProductos(event) {
   if (event) event.preventDefault();
@@ -379,9 +379,12 @@ function cargarProductos(event) {
       const productosTable = document.getElementById("productos-table");
       productosTable.innerHTML = "";
 
-
       productos.forEach((producto) => {
-        const urlImagen = `http://localhost:3000/${producto.url_imagen}`.replace(/([^:]\/)\/+/g, "$1");
+        const urlImagen =
+          `http://localhost:3000/${producto.url_imagen}`.replace(
+            /([^:]\/)\/+/g,
+            "$1"
+          );
 
         const row = `
                     <tr>
@@ -545,7 +548,7 @@ function editarProducto(id) {
             .then((response) => response.json())
             .then((data) => {
               alert("Producto actualizado exitosamente");
-              cargarProductos(); 
+              cargarProductos();
             })
             .catch((error) => {
               console.error("Error al actualizar el producto:", error);
@@ -573,8 +576,7 @@ function eliminarProducto(id) {
   }
 }
 
-
-function cargarOrdenes(event){
+function cargarOrdenes(event) {
   if (event) event.preventDefault();
   const content = document.getElementById("content");
   content.innerHTML = `

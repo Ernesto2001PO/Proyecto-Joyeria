@@ -32,8 +32,6 @@ function registrarOrden(usuario_id) {
             const carritoVacio = document.getElementById('carrito-vacio');
             carritoContainer.innerHTML = '';
             carritoVacio.style.display = 'block';
-
-        
         }
     })
     .catch(error => {

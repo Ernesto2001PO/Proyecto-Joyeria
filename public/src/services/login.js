@@ -17,7 +17,6 @@ function login(correo, contrasena) {
             localStorage.setItem('usuario_rol', data.usuario.rol);
             console.log('Usuario autenticado:', data.usuario);
 
-            // Transferir el carrito anónimo al usuario autenticado
             const session_id = localStorage.getItem('session_id');
             if (session_id) {
                 fetch('http://localhost:3000/api/transferir-carrito', {

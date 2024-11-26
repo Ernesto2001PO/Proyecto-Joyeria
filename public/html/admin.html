@@ -1,40 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/admin.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/admin.css" />
     <title>ADMINISTADOR</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <div class="header-logo">Pagina Administradora</div>
-        <div class="header-right">
-            <div id="usuario-info">
-                <span id="nombre-usuario"></span>
-                <button id="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
-            </div>
+      <div class="header-logo">Pagina Administradora</div>
+      <div class="header-right">
+        <div id="usuario-info">
+          <span id="nombre-usuario"></span>
+          <button id="cerrar-sesion" onclick="cerrarSesion()">
+            Cerrar sesión
+          </button>
         </div>
+      </div>
     </div>
     <div class="container">
-        <div class="sidebar">
-            <ul class="sidebar-menu">
-                <li><a href="#"  id="usuarios-link" >Usuarios</a></li>
-                <li><a href="#"  id="productos-link">Productos</a></li>
-                <li><a href="#"  id="categorias-link">Categorias</a></li>
-                <li><a href="#"  id="ordenes-link"  >Ordenes</a></li>
-
-            </ul>
+      <div class="sidebar">
+        <ul class="sidebar-menu">
+          <li><a href="#" id="usuarios-link">Usuarios</a></li>
+          <li><a href="#" id="productos-link">Productos</a></li>
+          <li><a href="#" id="categorias-link">Categorias</a></li>
+          <li><a href="#" id="ordenes-link">Ordenes</a></li>
+        </ul>
+      </div>
+      <div class="main-content">
+        <div class="main-content-header">
+          Bienvenido a la pagina administrador
         </div>
-        <div class="main-content">
-            <div class="main-content-header">Bienvenido a la pagina administrador</div>
-            <div class="content" id="content">
-                
-            </div> 
-        </div>
+        <div class="content" id="content"></div>
+      </div>
     </div>
 
     <script src="../src/components/admin.js"></script>
     <script src="../src/components/loginUI.js"></script>
-</body>
+  </body>
 </html>
