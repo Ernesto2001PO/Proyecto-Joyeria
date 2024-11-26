@@ -78,42 +78,47 @@ app.get("/api/usuarios", async (req, res) => {
   }
 });
 
+app.get("/api/usuarios/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const resultado = await db.query(
+      "SELECT * FROM usuario WHERE id = $1",
+      [id]
+    );
+    res.json(resultado.rows[0]);
+  } catch (err) {
+    console.error("Error al obtener el usuario:", err);
+    res.status(500).json({ error: "Error al obtener el usuario" });
+  }
+});
+
+
 app.get("/api/categorias", async (req, res) => {
   try {
     const resultado = await db.query(
-      "SELECT id, name, descripcion, categoria_padre_id FROM categoria"
+      "SELECT id, name, descripcion FROM categoria"
     );
-    const categorias = {};
+    res.json(resultado.rows);
 
-    resultado.rows.forEach((categoria) => {
-      if (!categoria.categoria_padre_id) {
-        categorias[categoria.id] = {
-          id: categoria.id,
-          name: categoria.name,
-          descripcion: categoria.descripcion,
-          subcategorias: [],
-        };
-      }
-    });
-    resultado.rows.forEach((categoria) => {
-      if (categoria.categoria_padre_id) {
-        const categoriaPadre = categorias[categoria.categoria_padre_id];
-        if (categoriaPadre) {
-          categoriaPadre.subcategorias.push({
-            id: categoria.id,
-            name: categoria.name,
-            descripcion: categoria.descripcion,
-          });
-        }
-      }
-    });
-    const categoriasArray = Object.values(categorias);
-    res.json(categoriasArray);
   } catch (err) {
     console.error("Error al obtener categorías:", err);
     res.status(500).json({ error: "Error al obtener categorías" });
   }
 });
+
+app.get("/api/categorias/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const resultado = await db.query(
+      "SELECT id, name, descripcion FROM categoria WHERE id = $1",[id]
+    );
+    res.json(resultado.rows[0]);
+  }catch (err) {
+    console.error("Error al obtener la categoría:", err);
+    res.status(500).json({ error: "Error al obtener la categoría" });
+  }
+});
+  
 
 // localhost:3000/api/carrito
 app.get("/api/carrito", async (req, res) => {
@@ -303,6 +308,16 @@ app.get('/api/productos/categoria/:categoria_id', async (req, res) => {
   }
 });
 
+app.get("/api/ordenes", async (req, res) => {
+  try {
+    const resultado = await db.query(" SELECT u.nombre_usuario, o.total,o.estado,o.creado_en FROM orden o JOIN itemorden io ON o.id = io.orden_id JOIN producto p ON io.producto_id = p.id JOIN usuario u ON o.usuario_id = u.id");
+    res.json(resultado.rows);
+  } catch (err) {
+    console.error("Error al consultar la base de datos:", err);
+    res.status(500).json({ error: "Error al consultar la base de datos" });
+  }
+});
+
 //===================POST====================================
 // POST localhost:3000/api/usuarios
 app.post("/api/usuarios", async (req, res) => {
@@ -320,6 +335,29 @@ app.post("/api/usuarios", async (req, res) => {
     res.status(500).json({ error: "Error al insertar en la base de datos" });
   }
 });
+
+
+// POST localhost:3000/api/categorias
+app.post("/api/categorias", async (req, res) => {
+  try {
+    const { name, descripcion } = req.body;
+
+    if (!name || !descripcion) {
+      return res.status(400).json({ error: "Nombre y descripción son requeridos" });
+    }
+
+    const resultado = await db.query(
+      "INSERT INTO categoria (name, descripcion) VALUES ($1, $2) RETURNING *",
+      [name, descripcion]
+    );
+
+    res.status(201).json({ mensaje: "Categoría creada", categoria: resultado.rows[0] });
+  } catch (err) {
+    console.error("Error al insertar en la base de datos:", err);
+    res.status(500).json({ error: "Error al insertar en la base de datos" });
+  }
+});
+
 
 // POST localhost:3000/api/usuarios/check
 app.post("/api/usuarios/check", async (req, res) => {
@@ -605,6 +643,7 @@ app.post('/api/transferir-carrito', async (req, res) => {
 
 
 //===================PUT======================================
+//  localhost:3000/api/carrito
 app.put("/api/carrito", async (req, res) => {
   try {
     const { usuario_id, item_id, cantidad } = req.body;
@@ -656,6 +695,7 @@ app.put("/api/carrito", async (req, res) => {
   }
 });
 
+// localhost:3000/api/carrito-anonimo
 app.put("/api/carrito-anonimo", async (req, res) => {
   try {
     const { session_id, item_id, cantidad } = req.body;
@@ -708,6 +748,45 @@ app.put("/api/carrito-anonimo", async (req, res) => {
       });
   }
 });
+
+// http://localhost:3000/api/usuarios/:id
+
+app.put("/api/usuarios/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { nombre_usuario, correo, rol ,contrasena } = req.body;
+
+    const resultado = await db.query(
+      "UPDATE usuario SET nombre_usuario = $1, correo = $2,  rol=$3 ,contrasena = $4 WHERE id = $5 RETURNING *",
+      [nombre_usuario, correo, rol ,contrasena, id]
+    );
+
+    res.status(200).json({ mensaje: "Usuario actualizado", usuario: resultado.rows[0] });
+  } catch (err) {
+    console.error("Error al actualizar el usuario:", err);
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+});
+
+app.put("/api/categorias/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name, descripcion } = req.body;
+
+    const resultado = await db.query(
+      "UPDATE categoria SET name = $1, descripcion = $2 WHERE id = $3 RETURNING *",
+      [name, descripcion, id]
+    );
+
+    res.status(200).json({ mensaje: "Categoría actualizada", categoria: resultado.rows[0] });
+  } catch (err) {
+    console.error("Error al actualizar la categoría:", err);
+    res.status(500).json({ error: "Error al actualizar la categoría" });
+  }
+});
+
+
+
 
 //http://localhost:3000/api/productos/${id}
 app.put('/api/productos/:id', async (req, res) => {
@@ -844,6 +923,37 @@ app.delete("/api/carrito-anonimo", async (req, res) => {
       .json({ error: "Error al eliminar producto del carrito anónimo" });
   }
 });
+
+// DELETE localhost:3000/api/usuarios/:id
+app.delete("/api/usuarios/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const resultado = await db.query("DELETE FROM usuario WHERE id = $1", [id]);
+    resultado;
+
+    res.status(200).send({ succes: true });
+
+  } catch (err) {
+    console.error("Error al eliminar el usuario:", err);
+    res.status(500).json({ error: "Error al eliminar el usuario" });
+  }
+});
+
+// DELETE localhost:3000/api/categorias/:id
+app.delete("/api/categorias/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const resultado = await db.query("DELETE FROM categoria WHERE id = $1", [id]);
+    resultado;
+    res.status(200).send({ succes: true });
+
+  } catch (err) {
+    console.error("Error al eliminar la categoría:", err);
+    res.status(500).json({ error: "Error al eliminar la categoría" });
+  }
+});
+
 
 // Iniciar servidor
 app.listen(PORT, () => {

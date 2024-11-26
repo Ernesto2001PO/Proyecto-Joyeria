@@ -30,7 +30,7 @@ function cargarProductos() {
     });
 }
 
-function cargarCategorias() {
+function cargarCategoria() {
   fetch("http://localhost:3000/api/categorias")
     .then((response) => response.json())
     .then((categorias) => {
@@ -38,12 +38,10 @@ function cargarCategorias() {
         "categorias-container"
       );
 
-      
       categorias.forEach((categoria) => {
         const categoriaHTML = `
           <li class="categoria-item">
             <a href="#" data-categoria-id="${categoria.id}">${categoria.name}</a>
-            <ul class="subcategoria-lista">${categoria.subcategorias}</ul>
           </li>
         `;
         categoriasContainer.innerHTML += categoriaHTML;
